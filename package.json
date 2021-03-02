@@ -7,7 +7,7 @@
     "rss": "bin/rss.js"
   },
   "scripts": {
-    "test": "npx jest"
+    "test": "jest --colors"
   },
   "repository": {
     "type": "git",
