@@ -3,6 +3,9 @@
   "main": "src/index.js",
   "version": "1.0.0",
   "description": "front-end project#3",
+  "bin": {
+    "rss": "bin/rss.js"
+  },
   "scripts": {
     "test": "npx jest"
   },
