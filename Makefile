@@ -9,6 +9,9 @@ test:
 test-coverage:
 	npm test -- --coverage --coverageProvider=v8
 
+rss:
+	node bin/
+
 lint:
 	npx eslint .
 
