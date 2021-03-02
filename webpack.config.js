@@ -7,23 +7,13 @@ const __dirname = path.dirname(__filename);
 
 export default {
   entry: {
-    main: './src/index.js',
+    main: path.resolve(__dirname, './src/index.js'),
   },
   output: {
     filename: 'output.js',
     path: path.resolve(__dirname, 'dist'),
   },
   mode: process.env.NODE_ENV || 'development',
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-        },
-      },
-    ],
-  },
   plugins: [
     new HtmlWebpackPlugin({
       template: 'template.html',

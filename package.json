@@ -4,7 +4,8 @@
   "description": "front-end project#3",
   "scripts": {
     "test": "jest --colors",
-    "build": "webpack"
+    "build": "webpack",
+    "start": "webpack serve"
   },
   "repository": {
     "type": "git",
