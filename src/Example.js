@@ -1,4 +1,5 @@
 // @ts-check
+import './style.css';
 
 export default class Example {
   constructor(element) {
@@ -6,7 +7,6 @@ export default class Example {
   }
 
   init() {
-    this.element.textContent = 'Hello, Irina!';
-    console.log('ehu!');
+    this.element.textContent = 'Hello, Irina! How are you?';
   }
 }
