@@ -7,6 +7,6 @@ export default class Example {
   }
 
   init() {
-    this.element.textContent = 'Button';
+    this.element.textContent = 'Submit';
   }
 }
