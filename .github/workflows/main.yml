@@ -7,28 +7,18 @@ on:
   - pull_request
 
 jobs:
-  build:
-
-    # The type of machine to run the job on
+  deploy:
     runs-on: ubuntu-latest
-
-    strategy:
-      # Node versions list
-      matrix:
-        node-version: [13.x]
-
     steps:
-      # Check-out repository under GitHub workspace
-      # https://github.com/actions/checkout
       - uses: actions/checkout@v2
-        # Step's name
-      - name: Use Node.js ${{ matrix.node-version }}
-        # Configures the node version used on GitHub-hosted runners
-        # https://github.com/actions/setup-node
-        uses: actions/setup-node@v1
-        # The Node.js version to configure
+      - uses: amondnet/vercel-action@v20
         with:
-          node-version: ${{ matrix.node-version }}
+          vercel-token: ${{ secrets.VERCEL_TOKEN }} # Required
+          github-token: ${{ secrets.GITHUB_TOKEN }} #Optional 
+          vercel-args: '--prod' #Optional
+          vercel-org-id: ${{ secrets.ORG_ID}}  #Required
+          vercel-project-id: ${{ secrets.PROJECT_ID}} #Required 
+          working-directory: ./sub-directory
 
       - name: npm install, build
         # Install and build project
