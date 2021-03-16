@@ -1,3 +1,52 @@
-.hello {
-    color: red;
+body {
+  font-family: sans-serif;
+}
+
+.block {
+    color: white;
+    background-color: rgb(75, 72, 72);
+    font-size: 38px;
+    text-indent: 200px;
+    vertical-align: bottom;
   }
+
+.is-invalid {
+    border-color: red;
+    color: red;
+}
+
+.form-control {
+  width: 500px;
+  height: 45px;
+  border-radius: 7px;
+}
+
+.btn {
+  font-size: 20px;
+  background-color: rgb(75, 75, 121);
+  color: white;
+  width: 50px;
+  height: 45px;
+  border-radius: 7px;
+}
+
+p {
+  font-size: 16px;
+}
+
+ul {
+  list-style: none;
+  text-indent: 185px;
+}
+
+.feedback {
+  font-size: 18px;
+}
+
+.input-group {
+  display: inline;
+}
+
+h2 {
+  text-indent: 200px;
+}

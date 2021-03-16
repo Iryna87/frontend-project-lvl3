@@ -2,13 +2,40 @@
 <html>
   <head>
     <title>Webpack Package</title>
+    <link rel="stylesheet" href="./src/style.css">
   </head>
   <body>
-    <div id="point">
-      <form>
-        <input>Text</input>
-        <button type='submit'>Button</button>
-      </form>
-    </div>
+    <section class="container-fluid bg-dark p-5">
+      <div class="row">
+        <div class="block">
+          <h1 class="display-3">RSS агрегатор</h1>
+          <p class="lead">Начните читать RSS сегодня! Это легко, это красиво.</p>
+          <form class="form">
+            <div class="input-group">
+              <input autofocus="" required="" name="name" aria-label="url" class='form-control' id='input' placeholder="ссылка RSS">
+              <div class="input-group-btn">
+                <button type="submit" aria-label="add" class="btn btn-default">Add</button>
+              </div>
+            </div>
+          </form>
+          <p class="text-muted my-1">Пример: https://ru.hexlet.io/lessons.rss</p>
+          <div class="feedback text-success"></div>
+        </div>
+      </div>
+    </section>
+    <section class="container-fluid p-5"">
+      <div class="row">
+        <div class="feeds">
+          <h2>Фиды</h2>
+          <ul class="ulFeed"></ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="posts">
+          <h2>Посты</h2>
+          <ul class="ulPosts" id='posts'></ul>
+        </div>
+      </div>
+    </section>
   </body>
 </html>

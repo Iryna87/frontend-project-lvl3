@@ -25,9 +25,12 @@
   "homepage": "https://github.com/Iryna87/frontend-project-lvl3#readme",
   "dependencies": {
     "@popperjs/core": "^2.9.1",
+    "axios": "^0.21.1",
     "bootstrap": "^5.0.0-beta2",
     "dom-parser": "^0.1.6",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "on-change": "^2.2.3",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@jest/globals": "^26.6.2",
@@ -42,6 +45,7 @@
     "jquery": "^3.6.0",
     "popper.js": "^1.16.1",
     "style-loader": "^2.0.0",
+    "typescript": "^4.2.3",
     "vercel": "^21.3.2",
     "webpack": "^5.24.2",
     "webpack-cli": "^4.5.0",
