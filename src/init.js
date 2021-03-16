@@ -58,6 +58,7 @@ export default () => {
 
   const watchedState = onChange(state, (path, value) => view(path, value));
 
+  // eslint-disable-next-line no-undef
   const form = document.querySelector('.form');
 
   form.addEventListener('submit', async (e) => {
