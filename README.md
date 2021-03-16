@@ -1,6 +1,6 @@
 # webpack-package
 
-...https://frontend-project-lvl3-kappa-one.vercel.app/...
+https://frontend-project-lvl3-kappa-one.vercel.app/
 
 [![Actions Status](https://github.com/Iryna87/frontend-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/Iryna87/frontend-project-lvl3/actions)
 
