@@ -47,6 +47,12 @@ ul {
   display: inline;
 }
 
+h3 {
+  text-indent: 185px;
+  font-weight: normal;
+  font-size: 14px;
+}
+
 h2 {
   text-indent: 200px;
 }
