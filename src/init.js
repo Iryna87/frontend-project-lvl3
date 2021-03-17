@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import onChange from 'on-change';
 import axios from 'axios';
 import DOMParser from 'dom-parser';
-import view from '../view.js';
+import view from './view.js';
 
 const schema = yup.object().shape({
   url: yup.string().url(),
@@ -58,7 +58,6 @@ export default () => {
 
   const watchedState = onChange(state, (path, value) => view(path, value));
 
-  // eslint-disable-next-line no-undef
   const form = document.querySelector('.form');
 
   form.addEventListener('submit', async (e) => {
@@ -75,18 +74,17 @@ export default () => {
             const parsedFeed = parseFeed(domparser.parseFromString(response.data.contents, 'application/xml'), i);
             // eslint-disable-next-line max-len
             const validation = parsedFeed.feedParsed.title;
+            const arr = [];
             let doubleValidation = '';
-            const elements = document.getElementsByClassName('feed');
+            const elements = document.querySelectorAll('.feed');
             Array.from(elements).forEach((feed) => {
-              const objFeed = {
-                1: feed.textContent,
-              };
-              if (_.includes(objFeed, validation)) {
+              arr.push(feed.textContent.trim());
+              if (_.includes(arr, validation.trim())) {
                 doubleValidation = 'This URL is aleready added';
               }
             });
             if (doubleValidation !== '') {
-              watchedState.serchForm.errors = 'ValidationError: url must be a valid URL';
+              watchedState.serchForm.errors = doubleValidation;
             } else {
               watchedState.serchForm.feeds = parsedFeed.feedParsed;
               watchedState.serchForm.posts = parsedFeed.postsParsed;
