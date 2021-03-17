@@ -5,6 +5,7 @@ import onChange from 'on-change';
 import axios from 'axios';
 import DOMParser from 'dom-parser';
 import view from './view.js';
+import './style.css';
 
 const schema = yup.object().shape({
   url: yup.string().url(),
