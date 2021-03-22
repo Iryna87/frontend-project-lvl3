@@ -20,13 +20,13 @@ const postsContainer = document.getElementById('posts');
 const input = document.getElementById('input');
 const feedback = document.querySelector('.feedback');
 
-const view = (path, value) => {
+const render = (path, value) => {
   const li = document.createElement('li');
   li.setAttribute('class', 'feed');
   if (path === 'serchForm.feeds') {
     const h3 = document.createElement('h3');
-    h3.textContent = `${value.description}`;
-    li.textContent = `${value.title}`;
+    h3.textContent = `${value.description.trim()}`;
+    li.textContent = `${value.title.trim()}`;
     feedsContainer.prepend(li, h3);
   } if (path === 'serchForm.posts') {
     Array.from(value).forEach((item) => {
@@ -35,8 +35,10 @@ const view = (path, value) => {
       const a = document.createElement('a');
       const button = document.createElement('button');
       button.textContent = i18n.t('key5');
-      a.textContent = `${item.title}`;
-      a.setAttribute('href', item.url);
+      a.textContent = `${item.title.trim()}`;
+      a.setAttribute('href', item.url.trim());
+      a.setAttribute('myAttr1', item.idPost);
+      a.setAttribute('myAttr2', item.idFeed);
       li1.append(a, button);
       postsContainer.prepend(li1);
     });
@@ -52,4 +54,4 @@ const view = (path, value) => {
   }
 };
 
-export default view;
+export default render;

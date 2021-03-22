@@ -28,7 +28,6 @@ const parseFeed = (doc, i) => {
     obj.postsParsed.push(post);
     j += 1;
   });
-  console.log(obj);
   return obj;
 };
 
