@@ -6,7 +6,6 @@ import axios from 'axios';
 import DOMParser from 'dom-parser';
 import render from './view.js';
 import parseFeed from './parse.js';
-import './style.css';
 
 const schema = yup.object().shape({
   url: yup.string().url(),
