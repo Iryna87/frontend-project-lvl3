@@ -34,7 +34,8 @@ export default () => {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const url = document.getElementById('input').value;
+    const input = document.getElementById('input').value;
+    const url = decodeURI(input);
     watchedState.searchForm.valid = '';
     watchedState.searchForm.url = url;
     schema
@@ -119,8 +120,8 @@ export default () => {
               setTimeout(getData, 5000);
             }, 5000);
           })
-          .catch((err) => {
-            watchedState.searchForm.errors = err;
+          .catch(() => {
+            watchedState.searchForm.errors = 'key1';
           });
       })
       .catch(() => {
