@@ -113,8 +113,8 @@ export default () => {
                   });
                   watchedState.searchForm.posts = result;
                 })
-                .catch(() => {
-                  watchedState.searchForm.errors = 'key1';
+                .catch((err) => {
+                  watchedState.searchForm.errors = err;
                 });
               setTimeout(getData, 5000);
             }, 5000);
