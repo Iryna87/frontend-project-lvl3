@@ -17,25 +17,22 @@ i18n.init({
   },
 });
 
-const feedsContainer = document.querySelector('.feeds');
-const postsContainer = document.querySelector('.posts');
-const input = document.getElementById('input');
-const modal = document.getElementById('modal');
-const fade = document.querySelector('.fade');
-const title = document.getElementById('title');
-const description = document.getElementById('description');
-const feedback = document.querySelector('.feedback');
-const h2feeds = document.createElement('h2');
-const h2posts = document.createElement('h2');
-feedsContainer.prepend(h2feeds);
-postsContainer.prepend(h2posts);
-
 const render = (path, value) => {
+  const feedsContainer = document.querySelector('.feeds');
+  const postsContainer = document.querySelector('.posts');
+  const input = document.getElementById('input');
+  const modal = document.getElementById('modal');
+  const fade = document.querySelector('.fade');
+  const title = document.getElementById('title');
+  const description = document.getElementById('description');
+  const feedback = document.querySelector('.feedback');
   const ul = document.createElement('ul');
   const h3 = document.createElement('h3');
   const p = document.createElement('p');
+  const h2feeds = document.createElement('h2');
   switch (path) {
     case 'searchForm.feeds':
+      feedsContainer.prepend(h2feeds);
       h2feeds.textContent = i18n.t('key6');
       p.setAttribute('class', 'feed');
       p.textContent = `${value.title.trim()}`;
@@ -45,6 +42,8 @@ const render = (path, value) => {
       break;
     case 'searchForm.posts':
       Array.from(value).forEach((item) => {
+        const h2posts = document.createElement('h2');
+        postsContainer.prepend(h2posts);
         h2posts.textContent = i18n.t('key7');
         const ul1 = document.createElement('ul');
         const li = document.createElement('li');
