@@ -18,11 +18,13 @@ const parseFeed = (doc, i) => {
   obj.feedParsed.title = feedTitle.textContent;
   obj.feedParsed.description = feedDescription.textContent;
   Array.from(posts).forEach((item) => {
+    const descrip = item.getElementsByTagName('description');
     const arr = item.textContent.split('\n');
     const post = {
       title: arr[1].trim(),
       url: arr[3].trim(),
-      idFeed: i,
+      description: descrip[0].textContent,
+      idFeed: 1,
       idPost: j,
     };
     obj.postsParsed.push(post);
