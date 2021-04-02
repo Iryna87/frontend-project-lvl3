@@ -30,6 +30,7 @@ const render = (path, value) => {
   const h3 = document.createElement('h3');
   const p = document.createElement('p');
   const h2feeds = document.createElement('h2');
+  const h2posts = document.createElement('h2');
   switch (path) {
     case 'searchForm.feeds':
       feedsContainer.prepend(h2feeds);
@@ -41,9 +42,8 @@ const render = (path, value) => {
       feedsContainer.append(ul);
       break;
     case 'searchForm.posts':
+      postsContainer.prepend(h2posts);
       Array.from(value).forEach((item) => {
-        const h2posts = document.createElement('h2');
-        postsContainer.prepend(h2posts);
         h2posts.textContent = i18n.t('key7');
         const ul1 = document.createElement('ul');
         const li = document.createElement('li');
