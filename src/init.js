@@ -119,8 +119,8 @@ export default () => {
               setTimeout(getData, 5000);
             }, 5000);
           })
-          .catch(() => {
-            watchedState.searchForm.errors = 'key1';
+          .catch((err) => {
+            watchedState.searchForm.errors = err;
           });
       })
       .catch(() => {
