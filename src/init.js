@@ -108,8 +108,8 @@ export default () => {
                     }
                   });
                   const result = newArr.filter((elm) => {
-                    const a = !oldArr.map((elm1) => elm1.title.trim()).includes(elm.title.trim());
-                    return a;
+                    const b = !oldArr.map((elm1) => elm1.title.trim()).includes(elm.title.trim());
+                    return b;
                   });
                   watchedState.searchForm.posts = result;
                 })
