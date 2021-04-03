@@ -40,7 +40,7 @@ export default () => {
     schema
       .validate({ url: watchedState.searchForm.url })
       .then(() => {
-        axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}&disableCache=true`)
+        axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}&disabledCache=true`)
           .then((response) => {
             const domparser = new DOMParser();
             const parsedFeed = parseFeed(domparser.parseFromString(response.data.contents, 'text/xml'), i);
