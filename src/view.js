@@ -33,7 +33,9 @@ const render = (path, value) => {
   const h2posts = document.createElement('h2');
   switch (path) {
     case 'searchForm.feeds':
-      feedsContainer.prepend(h2feeds);
+      if (feedsContainer.textContent === '') {
+        feedsContainer.prepend(h2feeds);
+      }
       h2feeds.textContent = i18n.t('key6');
       p.setAttribute('class', 'feed');
       p.textContent = `${value.title.trim()}`;
@@ -44,7 +46,9 @@ const render = (path, value) => {
     case 'searchForm.posts':
       postsContainer.prepend(h2posts);
       Array.from(value).forEach((item) => {
-        h2posts.textContent = i18n.t('key7');
+        if (postsContainer.textContent === '') {
+          h2posts.textContent = i18n.t('key7');
+        }
         const ul1 = document.createElement('ul');
         const li = document.createElement('li');
         li.setAttribute('class', 'post');

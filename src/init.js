@@ -93,7 +93,7 @@ export default () => {
           })
           .then(() => {
             window.setTimeout(function getData() {
-              axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}`)
+              axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}&disableCache=true`)
                 .then((response1) => {
                   const domparser = new DOMParser();
                   const parsedFeed1 = parseFeed(domparser.parseFromString(response1.data.contents, 'text/xml'), i);
@@ -108,19 +108,19 @@ export default () => {
                     }
                   });
                   const result = newArr.filter((elm) => {
-                    const b = !oldArr.map((elm1) => elm1.title.trim()).includes(elm.title.trim());
-                    return b;
+                    const a = !oldArr.map((elm1) => elm1.title.trim()).includes(elm.title.trim());
+                    return a;
                   });
                   watchedState.searchForm.posts = result;
                 })
-                .catch(() => {
-                  watchedState.searchForm.errors = 'key1';
+                .catch((err) => {
+                  watchedState.searchForm.errors = err;
                 });
               setTimeout(getData, 5000);
             }, 5000);
           })
-          .catch(() => {
-            watchedState.searchForm.errors = 'key1';
+          .catch((err) => {
+            watchedState.searchForm.errors = err;
           });
       })
       .catch(() => {
