@@ -34,7 +34,7 @@ export default () => {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const url = decodeURIComponent(document.getElementById('input').value);
+    const url = decodeURIComponent(JSON.parse(document.getElementById('input').value));
     watchedState.searchForm.valid = '';
     watchedState.searchForm.url = url;
     schema
