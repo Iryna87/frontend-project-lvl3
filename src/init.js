@@ -35,7 +35,7 @@ export default () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const input = document.getElementById('input').value;
-    const url = decodeURIComponent(input);
+    const url = `${input}&disableCache=true`;
     watchedState.searchForm.valid = '';
     watchedState.searchForm.url = url;
     schema
