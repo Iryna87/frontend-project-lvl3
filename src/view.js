@@ -19,11 +19,6 @@ i18n.init({
 });
 
 const render = (path, value, elements) => {
-  const ul = document.createElement('ul');
-  const h3 = document.createElement('h3');
-  const p = document.createElement('p');
-  const h2feeds = document.createElement('h2');
-  const h2posts = document.createElement('h2');
   const { feedsContainer } = elements;
   const { postsContainer } = elements;
   const { input } = elements;
@@ -35,6 +30,11 @@ const render = (path, value, elements) => {
 
   switch (path) {
     case 'searchForm.feeds':
+      const ul = document.createElement('ul');
+      const h3 = document.createElement('h3');
+      const p = document.createElement('p');
+      const h2feeds = document.createElement('h2');
+      const h2posts = document.createElement('h2');
       if (feedsContainer.textContent === '') {
         feedsContainer.prepend(h2feeds);
       }
