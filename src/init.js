@@ -29,12 +29,24 @@ export default () => {
     },
   };
 
-  const watchedState = onChange(state, (path, value) => render(path, value));
+  const elements = {
+    feedsContainer: document.querySelector('.feeds'),
+    postsContainer: document.querySelector('.posts'),
+    input: document.getElementById('input'),
+    modal: document.getElementById('modal'),
+    fade: document.querySelector('.fade'),
+    title: document.getElementById('title'),
+    description: document.getElementById('description'),
+    feedback: document.querySelector('.feedback'),
+  };
+
+  const watchedState = onChange(state, (path, value) => render(path, value, elements));
   const form = document.querySelector('.form');
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const url = document.getElementById('input').value;
+    const { input } = elements;
+    const url = input.value;
     watchedState.searchForm.valid = '';
     watchedState.searchForm.url = url;
     schema
@@ -47,14 +59,15 @@ export default () => {
             const validation = parsedFeed.feedParsed.title;
             const arr = [];
             let doubleValidation = '';
-            const elements = document.querySelectorAll('.feed');
-            Array.from(elements).forEach((feed) => {
+            const feedElements = document.querySelectorAll('.feed');
+            Array.from(feedElements).forEach((feed) => {
               arr.push(feed.textContent.trim());
               if (_.includes(arr, validation.trim())) {
                 doubleValidation = 'key2';
               }
             });
             if (doubleValidation !== '') {
+              console.log(doubleValidation);
               watchedState.searchForm.errors = doubleValidation;
             } else {
               watchedState.searchForm.feeds = parsedFeed.feedParsed;

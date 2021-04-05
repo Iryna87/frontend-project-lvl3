@@ -18,20 +18,21 @@ i18n.init({
   },
 });
 
-const render = (path, value) => {
-  const feedsContainer = document.querySelector('.feeds');
-  const postsContainer = document.querySelector('.posts');
-  const input = document.getElementById('input');
-  const modal = document.getElementById('modal');
-  const fade = document.querySelector('.fade');
-  const title = document.getElementById('title');
-  const description = document.getElementById('description');
-  const feedback = document.querySelector('.feedback');
+const render = (path, value, elements) => {
   const ul = document.createElement('ul');
   const h3 = document.createElement('h3');
   const p = document.createElement('p');
   const h2feeds = document.createElement('h2');
   const h2posts = document.createElement('h2');
+  const { feedsContainer } = elements;
+  const { postsContainer } = elements;
+  const { input } = elements;
+  const { feedback } = elements;
+  const { title } = elements;
+  const { modal } = elements;
+  const { fade } = elements;
+  const { description } = elements;
+
   switch (path) {
     case 'searchForm.feeds':
       if (feedsContainer.textContent === '') {
@@ -93,6 +94,7 @@ const render = (path, value) => {
       feedback.classList.add('is-invalid');
       input.classList.add('is-invalid');
       feedback.textContent = i18n.t(`${value}`);
+      input.value = '';
       break;
     case 'UI.modalPostTitle':
       title.textContent = value;
