@@ -34,7 +34,6 @@ const render = (path, value, elements) => {
       const h3 = document.createElement('h3');
       const p = document.createElement('p');
       const h2feeds = document.createElement('h2');
-      const h2posts = document.createElement('h2');
       if (feedsContainer.textContent === '') {
         feedsContainer.prepend(h2feeds);
       }
@@ -46,6 +45,7 @@ const render = (path, value, elements) => {
       feedsContainer.append(ul);
       break;
     case 'searchForm.posts':
+      const h2posts = document.createElement('h2');
       postsContainer.prepend(h2posts);
       Array.from(value).forEach((item) => {
         if (postsContainer.textContent === '') {
