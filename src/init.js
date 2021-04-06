@@ -68,8 +68,8 @@ export default () => {
       } if (_.includes('ValidationError: this must not be one of the following values: https://ru.hexlet.io/lessons.rss', errors)) {
         watchedState.searchForm.errors = 'key2';
       }
-      arr.push(url);
     } else {
+      arr.push(url);
       axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}&disableCache=true`)
         .then((response) => {
           const domparser = new DOMParser();
