@@ -62,13 +62,13 @@ export default () => {
     watchedState.searchForm.valid = '';
     watchedState.searchForm.url = url;
     const errors = validate(watchedState.searchForm.url);
-    arr.push(url);
     if (!_.isEmpty(errors)) {
       if (_.includes('ValidationError: this must be a valid URL', errors)) {
         watchedState.searchForm.errors = 'key4';
       } if (_.includes('ValidationError: this must not be one of the following values: https://ru.hexlet.io/lessons.rss', errors)) {
         watchedState.searchForm.errors = 'key2';
       }
+      arr.push(url);
     } else {
       axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}&disableCache=true`)
         .then((response) => {
