@@ -66,7 +66,7 @@ export default () => {
     if (!_.isEmpty(errors)) {
       if (_.includes('ValidationError: this must be a valid URL', errors)) {
         watchedState.searchForm.errors = 'key4';
-      } else {
+      } if (_.includes('ValidationError: this must not be one of the following values: https://ru.hexlet.io/lessons.rss', errors)) {
         watchedState.searchForm.errors = 'key2';
       }
     } else {

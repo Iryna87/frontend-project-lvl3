@@ -94,6 +94,7 @@ const render = (path, value, elements) => {
       feedback.classList.add('is-invalid');
       input.classList.add('is-invalid');
       feedback.textContent = i18n.t(`${value}`);
+      //feedback.textContent = value;
       input.value = '';
       break;
     case 'UI.modalPostTitle':
