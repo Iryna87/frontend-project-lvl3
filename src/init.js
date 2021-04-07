@@ -73,38 +73,42 @@ export default () => {
         .then((response) => {
           const domparser = new DOMParser();
           const parsedFeed = parseFeed(domparser.parseFromString(response.data.contents, 'text/xml'), i);
-          watchedState.searchForm.feeds = parsedFeed.feedParsed;
-          watchedState.searchForm.posts = parsedFeed.postsParsed;
-          watchedState.searchForm.valid = 'key3';
-          i += 1;
-          const posts = document.querySelector('.posts');
-          const buttons = posts.querySelectorAll('.btn');
-          Array.from(buttons).forEach((btn) => {
-            btn.addEventListener('click', () => {
-              const id = parseInt(btn.getAttribute('idpost'), 10);
-              const { description } = parsedFeed.postsParsed.find((post) => post.idPost === id);
-              const { title } = parsedFeed.postsParsed.find((post) => post.idPost === id);
-              const modalUrl = parsedFeed.postsParsed.find((post) => post.idPost === id).url;
-              watchedState.UI.modalPostTitle = title;
-              watchedState.UI.modalPostDescription = description;
-              watchedState.UI.modalPostUrl = modalUrl;
+          if (_.isEmpty(parsedFeed)) {
+            watchedState.searchForm.errors = 'key8';
+          } else {
+            watchedState.searchForm.feeds = parsedFeed.feedParsed;
+            watchedState.searchForm.posts = parsedFeed.postsParsed;
+            watchedState.searchForm.valid = 'key3';
+            i += 1;
+            const posts = document.querySelector('.posts');
+            const buttons = posts.querySelectorAll('.btn');
+            Array.from(buttons).forEach((btn) => {
+              btn.addEventListener('click', () => {
+                const id = parseInt(btn.getAttribute('idpost'), 10);
+                const { description } = parsedFeed.postsParsed.find((post) => post.idPost === id);
+                const { title } = parsedFeed.postsParsed.find((post) => post.idPost === id);
+                const modalUrl = parsedFeed.postsParsed.find((post) => post.idPost === id).url;
+                watchedState.UI.modalPostTitle = title;
+                watchedState.UI.modalPostDescription = description;
+                watchedState.UI.modalPostUrl = modalUrl;
+              });
             });
-          });
-          const dismissBtns = document.querySelectorAll('button[data-dismiss="modal"]');
-          const readBtn = document.querySelector('button[data="read"]');
-          const description = document.getElementById('description');
-          readBtn.addEventListener('click', () => {
-            const href = description.getAttribute('href');
-            window.open(href);
-            watchedState.UI.modalModus = 'off';
-            watchedState.UI.modalModus = 'on';
-          });
-          Array.from(dismissBtns).forEach((dismissBtn) => {
-            dismissBtn.addEventListener('click', () => {
+            const dismissBtns = document.querySelectorAll('button[data-dismiss="modal"]');
+            const readBtn = document.querySelector('button[data="read"]');
+            const description = document.getElementById('description');
+            readBtn.addEventListener('click', () => {
+              const href = description.getAttribute('href');
+              window.open(href);
               watchedState.UI.modalModus = 'off';
               watchedState.UI.modalModus = 'on';
             });
-          });
+            Array.from(dismissBtns).forEach((dismissBtn) => {
+              dismissBtn.addEventListener('click', () => {
+                watchedState.UI.modalModus = 'off';
+                watchedState.UI.modalModus = 'on';
+              });
+            });
+          }
         })
         .then(() => {
           window.setTimeout(function getData() {
