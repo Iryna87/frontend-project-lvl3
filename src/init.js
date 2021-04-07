@@ -132,14 +132,14 @@ export default () => {
                 });
                 watchedState.searchForm.posts = result;
               })
-              .catch((err) => {
-                watchedState.searchForm.errors = err;
+              .catch(() => {
+                watchedState.searchForm.errors = 'key1';
               });
             setTimeout(getData, 5000);
           }, 5000);
         })
-        .catch((err) => {
-          watchedState.searchForm.errors = err;
+        .catch(() => {
+          watchedState.searchForm.errors = 'key1';
         });
     }
   });
