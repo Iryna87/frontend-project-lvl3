@@ -7,9 +7,7 @@ import DOMParser from 'dom-parser';
 import render from './view.js';
 import parseFeed from './parse.js';
 
-const arr = [];
-
-const validate = (str) => {
+const validate = (str, arr) => {
   const schema = yup.string()
     .required()
     .url()
@@ -23,6 +21,7 @@ const validate = (str) => {
 };
 
 export default () => {
+  const arr = [];
   let i = 1;
   const state = {
     searchForm: {
@@ -61,7 +60,7 @@ export default () => {
     const url = input.value.trim();
     watchedState.searchForm.valid = '';
     watchedState.searchForm.url = url;
-    const errors = validate(watchedState.searchForm.url);
+    const errors = validate(watchedState.searchForm.url, arr);
     if (!_.isEmpty(errors)) {
       if (_.includes('ValidationError: this must be a valid URL', errors)) {
         watchedState.searchForm.errors = 'key4';
