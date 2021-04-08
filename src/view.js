@@ -101,10 +101,10 @@ const render = (path, value, elements) => {
     case 'UI.readOnly':
       if (value === true) {
         input.setAttribute('readonly', true);
-        button.setAttribute('readonly', true);
+        button.setAttribute('disabled', true);
       } if (value === false) {
         input.removeAttribute('readonly');
-        button.removeAttribute('readonly');
+        button.removeAttribute('disabled');
       }
       break;
     case 'UI.modalPostTitle':
