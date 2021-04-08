@@ -32,6 +32,7 @@ export default () => {
       valid: '',
     },
     UI: {
+      readOnly: false,
       modalModus: 'on',
       modalPostUrl: '',
       modalPostTitle: '',
@@ -43,6 +44,7 @@ export default () => {
     feedsContainer: document.querySelector('.feeds'),
     postsContainer: document.querySelector('.posts'),
     input: document.getElementById('input'),
+    button: document.querySelector('.button'),
     modal: document.getElementById('modal'),
     fade: document.querySelector('.fade'),
     title: document.getElementById('title'),
@@ -56,6 +58,7 @@ export default () => {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    watchedState.UI.readOnly = true;
     const { input } = elements;
     const url = input.value.trim();
     watchedState.searchForm.valid = '';
@@ -68,6 +71,7 @@ export default () => {
         watchedState.searchForm.errors = 'key2';
       }
     } else {
+      watchedState.UI.readOnly = false;
       arr.push(url);
       axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}&disableCache=true`)
         .then((response) => {

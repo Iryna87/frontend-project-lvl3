@@ -28,6 +28,7 @@ const render = (path, value, elements) => {
   const { feedsContainer } = elements;
   const { postsContainer } = elements;
   const { input } = elements;
+  const { button } = elements;
   const { feedback } = elements;
   const { title } = elements;
   const { modal } = elements;
@@ -37,7 +38,6 @@ const render = (path, value, elements) => {
   switch (path) {
     case 'searchForm.feeds':
       input.value = '';
-      input.setAttribute('readonly', true);
       if (feedsContainer.textContent === '') {
         feedsContainer.prepend(h2feeds);
       }
@@ -49,7 +49,6 @@ const render = (path, value, elements) => {
       feedsContainer.append(ul);
       break;
     case 'searchForm.posts':
-      postsContainer.prepend(h2posts);
       Array.from(value).forEach((item) => {
         if (postsContainer.textContent === '') {
           h2posts.textContent = i18n.t('key7');
@@ -82,12 +81,12 @@ const render = (path, value, elements) => {
         });
         li.prepend(a, btn);
         ul1.prepend(li);
+        postsContainer.prepend(h2posts);
         postsContainer.append(ul1);
       });
       break;
     case 'searchForm.valid':
       input.value = '';
-      input.removeAttribute('readonly');
       input.classList.remove('is-invalid');
       feedback.classList.remove('is-invalid');
       feedback.classList.add('is-valid');
@@ -98,6 +97,15 @@ const render = (path, value, elements) => {
       feedback.classList.add('is-invalid');
       input.classList.add('is-invalid');
       feedback.textContent = i18n.t(`${value}`);
+      break;
+    case 'UI.readOnly':
+      if (value === true) {
+        input.setAttribute('readonly', true);
+        button.setAttribute('readonly', true);
+      } if (value === false) {
+        input.removeAttribute('readonly');
+        button.removeAttribute('readonly');
+      }
       break;
     case 'UI.modalPostTitle':
       title.textContent = value;
