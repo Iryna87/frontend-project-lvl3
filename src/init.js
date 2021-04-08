@@ -71,10 +71,10 @@ export default () => {
         watchedState.searchForm.errors = 'key2';
       }
     } else {
-      watchedState.UI.readOnly = false;
       arr.push(url);
       axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}&disableCache=true`)
         .then((response) => {
+          watchedState.UI.readOnly = false;
           const domparser = new DOMParser();
           const parsedFeed = parseFeed(domparser.parseFromString(response.data.contents, 'text/xml'), i);
           if (_.isEmpty(parsedFeed)) {
