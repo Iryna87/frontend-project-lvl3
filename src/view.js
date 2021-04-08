@@ -36,6 +36,8 @@ const render = (path, value, elements) => {
 
   switch (path) {
     case 'searchForm.feeds':
+      input.value = '';
+      input.setAttribute('readonly', true);
       if (feedsContainer.textContent === '') {
         feedsContainer.prepend(h2feeds);
       }
@@ -85,6 +87,7 @@ const render = (path, value, elements) => {
       break;
     case 'searchForm.valid':
       input.value = '';
+      input.removeAttribute('readonly');
       input.classList.remove('is-invalid');
       feedback.classList.remove('is-invalid');
       feedback.classList.add('is-valid');
@@ -95,7 +98,6 @@ const render = (path, value, elements) => {
       feedback.classList.add('is-invalid');
       input.classList.add('is-invalid');
       feedback.textContent = i18n.t(`${value}`);
-      input.value = '';
       break;
     case 'UI.modalPostTitle':
       title.textContent = value;
