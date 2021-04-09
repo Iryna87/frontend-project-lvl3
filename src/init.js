@@ -56,6 +56,35 @@ export default () => {
   const watchedState = onChange(state, (path, value) => render(path, value, elements));
   const form = document.querySelector('.form');
 
+  const timeOut = (url1) => {
+    window.setTimeout(function getData() {
+      axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url1)}&disableCache=true`)
+        .then((response1) => {
+          const domparser = new DOMParser();
+          const parsedFeed1 = parseFeed(domparser.parseFromString(response1.data.contents, 'text/xml'), i);
+          const newArr = parsedFeed1.postsParsed;
+          const posts = document.getElementsByTagName('a');
+          const oldArr = [];
+          Array.from(posts).forEach((post) => {
+            if (post.href.slice(0, 6) === url1.slice(0, 6)) {
+              oldArr.push({
+                title: post.textContent.trim(),
+              });
+            }
+          });
+          const result = newArr.filter((elm) => {
+            const a = !oldArr.map((elm1) => elm1.title.trim()).includes(elm.title.trim());
+            return a;
+          });
+          watchedState.searchForm.posts = result;
+        })
+        .catch(() => {
+          watchedState.searchForm.errors = 'key1';
+        });
+      setTimeout(getData, 5000);
+    }, 5000);
+  };
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     watchedState.UI.readOnly = true;
@@ -64,11 +93,12 @@ export default () => {
     watchedState.searchForm.valid = '';
     watchedState.searchForm.url = url;
     const errors = validate(watchedState.searchForm.url, arr);
+    console.log(errors);
     if (!_.isEmpty(errors)) {
       if (_.includes('ValidationError: this must be a valid URL', errors)) {
         watchedState.UI.readOnly = false;
         watchedState.searchForm.errors = 'key4';
-      } if (_.includes('ValidationError: this must not be one of the following values: https://ru.hexlet.io/lessons.rss', errors)) {
+      } if (_.includes(`ValidationError: this must not be one of the following values: ${url}`, errors)) {
         watchedState.UI.readOnly = false;
         watchedState.searchForm.errors = 'key2';
       }
@@ -114,38 +144,12 @@ export default () => {
                 watchedState.UI.modalModus = 'on';
               });
             });
+            timeOut(url);
           }
         })
-        .then(() => {
-          window.setTimeout(function getData() {
-            axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}&disableCache=true`)
-              .then((response1) => {
-                const domparser = new DOMParser();
-                const parsedFeed1 = parseFeed(domparser.parseFromString(response1.data.contents, 'text/xml'), i);
-                const newArr = parsedFeed1.postsParsed;
-                const posts = document.getElementsByTagName('a');
-                const oldArr = [];
-                Array.from(posts).forEach((post) => {
-                  if (post.href.slice(0, 6) === url.slice(0, 6)) {
-                    oldArr.push({
-                      title: post.textContent.trim(),
-                    });
-                  }
-                });
-                const result = newArr.filter((elm) => {
-                  const a = !oldArr.map((elm1) => elm1.title.trim()).includes(elm.title.trim());
-                  return a;
-                });
-                watchedState.searchForm.posts = result;
-              })
-              .catch(() => {
-                watchedState.searchForm.errors = 'key1';
-              });
-            setTimeout(getData, 5000);
-          }, 5000);
-        })
-        .catch(() => {
-          watchedState.searchForm.errors = 'key1';
+        .catch((err) => {
+          //watchedState.UI.readOnly = false;
+          watchedState.searchForm.errors = err;
         });
     }
   });
