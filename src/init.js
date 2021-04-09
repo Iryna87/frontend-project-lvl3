@@ -58,8 +58,10 @@ export default () => {
 
   const timeOut = (url1) => {
     window.setTimeout(function getData() {
+      watchedState.UI.readOnly = true;
       axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url1)}&disableCache=true`)
         .then((response1) => {
+          watchedState.UI.readOnly = false;
           const domparser = new DOMParser();
           const parsedFeed1 = parseFeed(domparser.parseFromString(response1.data.contents, 'text/xml'), i);
           const newArr = parsedFeed1.postsParsed;
@@ -79,6 +81,7 @@ export default () => {
           watchedState.searchForm.posts = result;
         })
         .catch(() => {
+          watchedState.UI.readOnly = false;
           watchedState.searchForm.errors = 'key1';
         });
       setTimeout(getData, 5000);
@@ -93,7 +96,6 @@ export default () => {
     watchedState.searchForm.valid = '';
     watchedState.searchForm.url = url;
     const errors = validate(watchedState.searchForm.url, arr);
-    console.log(errors);
     if (!_.isEmpty(errors)) {
       if (_.includes('ValidationError: this must be a valid URL', errors)) {
         watchedState.UI.readOnly = false;
@@ -147,9 +149,9 @@ export default () => {
             timeOut(url);
           }
         })
-        .catch((err) => {
-          //watchedState.UI.readOnly = false;
-          watchedState.searchForm.errors = err;
+        .catch(() => {
+          watchedState.UI.readOnly = false;
+          watchedState.searchForm.errors = 'key1';
         });
     }
   });
