@@ -66,17 +66,17 @@ const render = (path, value, elements) => {
         btn.setAttribute('data-target', '#modal');
         btn.setAttribute('type', 'submit');
         btn.addEventListener('click', () => {
-          a.classList.remove('bold');
+          a.classList.remove('font-weight-bold');
           a.setAttribute('class', 'normal');
         });
         a.textContent = `${item.title.trim()}`;
-        a.setAttribute('class', 'bold');
+        a.setAttribute('class', 'font-weight-bold');
         a.setAttribute('href', item.url.trim());
         a.setAttribute('target', '_blanck');
         a.setAttribute('idPost', item.idPost);
         a.setAttribute('idFeed', item.idFeed);
         a.addEventListener('click', () => {
-          a.classList.remove('bold');
+          a.classList.remove('font-weight-bold');
           a.setAttribute('class', 'normal');
         });
         li.prepend(a, btn);
