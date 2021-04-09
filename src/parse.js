@@ -1,13 +1,11 @@
 import _ from 'lodash';
 
-let j = 1;
-
-const parseFeed = (doc, i) => {
+const parseFeed = (doc) => {
+  let i = 1;
   const obj = {
     feedParsed: {
       title: '',
       description: '',
-      idFeed: i,
     },
     postsParsed: [],
   };
@@ -24,13 +22,13 @@ const parseFeed = (doc, i) => {
       title: arr[1].trim(),
       url: arr[3].trim(),
       description: descrip[0].textContent,
-      idFeed: 1,
-      idPost: j,
+      idPost: i,
     };
     obj.feedParsed.title = feedTitle.textContent;
     obj.feedParsed.description = feedDescription.textContent;
     obj.postsParsed.push(post);
-    j += 1;
+    // eslint-disable-next-line no-param-reassign
+    i += 1;
   });
   if (_.isEmpty(posts)) {
     return {};

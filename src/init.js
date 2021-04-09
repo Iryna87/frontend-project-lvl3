@@ -1,28 +1,15 @@
 // @ts-check
 import _ from 'lodash';
-import * as yup from 'yup';
 import onChange from 'on-change';
 import axios from 'axios';
 import DOMParser from 'dom-parser';
 import render from './view.js';
 import parseFeed from './parse.js';
-
-const validate = (str, arr) => {
-  const schema = yup.string()
-    .required()
-    .url()
-    .notOneOf(arr);
-  try {
-    schema.validateSync(str);
-    return {};
-  } catch (err) {
-    return err;
-  }
-};
+import validate from './validate.js';
+import timeOut from './timeOut.js';
 
 export default () => {
   const arr = [];
-  let i = 1;
   const state = {
     searchForm: {
       url: '',
@@ -51,42 +38,11 @@ export default () => {
     description: document.getElementById('description'),
     feedback: document.querySelector('.feedback'),
     feedElements: document.querySelectorAll('.feed'),
+    posts: document.getElementsByTagName('a'),
   };
 
   const watchedState = onChange(state, (path, value) => render(path, value, elements));
   const form = document.querySelector('.form');
-
-  const timeOut = (url1) => {
-    window.setTimeout(function getData() {
-      watchedState.UI.readOnly = true;
-      axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url1)}&disableCache=true`)
-        .then((response1) => {
-          watchedState.UI.readOnly = false;
-          const domparser = new DOMParser();
-          const parsedFeed1 = parseFeed(domparser.parseFromString(response1.data.contents, 'text/xml'), i);
-          const newArr = parsedFeed1.postsParsed;
-          const posts = document.getElementsByTagName('a');
-          const oldArr = [];
-          Array.from(posts).forEach((post) => {
-            if (post.href.slice(0, 6) === url1.slice(0, 6)) {
-              oldArr.push({
-                title: post.textContent.trim(),
-              });
-            }
-          });
-          const result = newArr.filter((elm) => {
-            const a = !oldArr.map((elm1) => elm1.title.trim()).includes(elm.title.trim());
-            return a;
-          });
-          watchedState.searchForm.posts = result;
-        })
-        .catch(() => {
-          watchedState.UI.readOnly = false;
-          watchedState.searchForm.errors = 'key1';
-        });
-      setTimeout(getData, 5000);
-    }, 5000);
-  };
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -110,14 +66,13 @@ export default () => {
         .then((response) => {
           watchedState.UI.readOnly = false;
           const domparser = new DOMParser();
-          const parsedFeed = parseFeed(domparser.parseFromString(response.data.contents, 'text/xml'), i);
+          const parsedFeed = parseFeed(domparser.parseFromString(response.data.contents, 'text/xml'));
           if (_.isEmpty(parsedFeed)) {
             watchedState.searchForm.errors = 'key8';
           } else {
             watchedState.searchForm.feeds = parsedFeed.feedParsed;
-            watchedState.searchForm.posts = parsedFeed.postsParsed;
+            _.concat(watchedState.searchForm.posts, parsedFeed.postsParsed);
             watchedState.searchForm.valid = 'key3';
-            i += 1;
             const posts = document.querySelector('.posts');
             const buttons = posts.querySelectorAll('.btn');
             Array.from(buttons).forEach((btn) => {
@@ -146,7 +101,7 @@ export default () => {
                 watchedState.UI.modalModus = 'on';
               });
             });
-            timeOut(url);
+            timeOut(url, watchedState, elements);
           }
         })
         .catch(() => {
