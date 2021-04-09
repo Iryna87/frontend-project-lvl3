@@ -1,3 +1,4 @@
+/* eslint no-underscore-dangle: 0 */
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import { fileURLToPath } from 'url';

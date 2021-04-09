@@ -22,7 +22,7 @@ const validate = (str, arr) => {
 
 export default () => {
   const arr = [];
-  let i = 1;
+  const i = 1;
   const state = {
     searchForm: {
       url: '',

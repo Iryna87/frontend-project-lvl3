@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-let j = 1;
+const j = 1;
 
 const parseFeed = (doc, i) => {
   const obj = {
