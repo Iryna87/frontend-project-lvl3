@@ -38,7 +38,6 @@ export default () => {
     description: document.getElementById('description'),
     feedback: document.querySelector('.feedback'),
     feedElements: document.querySelectorAll('.feed'),
-    posts: document.getElementsByTagName('a'),
   };
 
   const watchedState = onChange(state, (path, value) => render(path, value, elements));
@@ -71,16 +70,19 @@ export default () => {
             watchedState.searchForm.errors = 'key8';
           } else {
             watchedState.searchForm.feeds = parsedFeed.feedParsed;
-            _.concat(watchedState.searchForm.posts, parsedFeed.postsParsed);
+            watchedState.searchForm.posts = parsedFeed.postsParsed;
             watchedState.searchForm.valid = 'key3';
             const posts = document.querySelector('.posts');
             const buttons = posts.querySelectorAll('.btn');
             Array.from(buttons).forEach((btn) => {
               btn.addEventListener('click', () => {
                 const id = parseInt(btn.getAttribute('idpost'), 10);
-                const { description } = parsedFeed.postsParsed.find((post) => post.idPost === id);
-                const { title } = parsedFeed.postsParsed.find((post) => post.idPost === id);
-                const modalUrl = parsedFeed.postsParsed.find((post) => post.idPost === id).url;
+                // eslint-disable-next-line max-len
+                const { description } = parsedFeed.postsParsed.find((post) => parseInt(post.idPost, 10) === id);
+                // eslint-disable-next-line max-len
+                const { title } = parsedFeed.postsParsed.find((post) => parseInt(post.idPost, 10) === id);
+                // eslint-disable-next-line max-len
+                const modalUrl = parsedFeed.postsParsed.find((post) => parseInt(post.idPost, 10) === id).url;
                 watchedState.UI.modalPostTitle = title;
                 watchedState.UI.modalPostDescription = description;
                 watchedState.UI.modalPostUrl = modalUrl;
@@ -101,7 +103,7 @@ export default () => {
                 watchedState.UI.modalModus = 'on';
               });
             });
-            timeOut(url, watchedState, elements);
+            timeOut(url, watchedState);
           }
         })
         .catch(() => {

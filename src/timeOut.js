@@ -1,7 +1,7 @@
 import axios from 'axios';
 import parseFeed from './parse.js';
 
-export default (url1, watchedState1, elements) => {
+export default (url1, watchedState1) => {
   window.setTimeout(function getData() {
     // eslint-disable-next-line no-param-reassign
     watchedState1.UI.readOnly = true;
@@ -12,7 +12,7 @@ export default (url1, watchedState1, elements) => {
         const domparser = new DOMParser();
         const parsedFeed1 = parseFeed(domparser.parseFromString(response1.data.contents, 'text/xml'));
         const newArr = parsedFeed1.postsParsed;
-        const { posts } = elements;
+        const posts = document.getElementsByTagName('a');
         const oldArr = [];
         Array.from(posts).forEach((post) => {
           if (post.href.slice(0, 6) === url1.slice(0, 6)) {

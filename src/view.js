@@ -61,7 +61,6 @@ const render = (path, value, elements) => {
         btn.textContent = i18n.t('key5');
         btn.setAttribute('class', 'btn');
         btn.setAttribute('idPost', item.idPost);
-        btn.setAttribute('idFeed', item.idFeed);
         btn.setAttribute('data-toggle', 'modal');
         btn.setAttribute('data-target', '#modal');
         btn.setAttribute('type', 'submit');
@@ -74,7 +73,6 @@ const render = (path, value, elements) => {
         a.setAttribute('href', item.url.trim());
         a.setAttribute('target', '_blanck');
         a.setAttribute('idPost', item.idPost);
-        a.setAttribute('idFeed', item.idFeed);
         a.addEventListener('click', () => {
           a.classList.remove('font-weight-bold');
           a.setAttribute('class', 'normal');
