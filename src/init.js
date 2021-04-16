@@ -69,9 +69,9 @@ export default () => {
                 watchedState.UI.seenPostsId.push(state.UI.modalPostId);
               });
             });
+            const description = document.getElementById('description');
             const dismissBtns = document.querySelectorAll('button[data-dismiss="modal"]');
             const readBtn = document.querySelector('button[data="read"]');
-            const description = document.getElementById('description');
             readBtn.addEventListener('click', () => {
               const href = description.getAttribute('href');
               window.open(href);
