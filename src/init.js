@@ -30,7 +30,7 @@ export default () => {
 
   const watchedState = onChange(state, (path, value) => render(state.posts, path, value, elements));
 
-  const { form } = elements;
+  const form = document.querySelector('.form');
   const arr = [];
 
   form.addEventListener('submit', async (e) => {

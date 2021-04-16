@@ -1,5 +1,4 @@
 export default {
-  form: document.querySelector('.form'),
   feedsContainer: document.querySelector('.feeds'),
   postsContainer: document.querySelector('.posts'),
   input: document.getElementById('input'),
