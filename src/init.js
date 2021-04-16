@@ -7,7 +7,19 @@ import render from './view.js';
 import parseFeed from './parse.js';
 import validate from './validate.js';
 import timeOut from './timeOut.js';
-import elements from './elements.js';
+
+const elements = {
+  form: document.querySelector('.form'),
+  feedsContainer: document.querySelector('.feeds'),
+  postsContainer: document.querySelector('.posts'),
+  input: document.getElementById('input'),
+  button: document.querySelector('.button'),
+  feedback: document.querySelector('.feedback'),
+  modal: document.getElementById('modal'),
+  fade: document.querySelector('.fade'),
+  tModal: document.getElementById('title'),
+  dModal: document.getElementById('description'),
+};
 
 export default () => {
   const state = {
@@ -30,7 +42,7 @@ export default () => {
 
   const watchedState = onChange(state, (path, value) => render(state.posts, path, value, elements));
 
-  const form = document.querySelector('.form');
+  const { form } = elements;
   const arr = [];
 
   form.addEventListener('submit', async (e) => {
