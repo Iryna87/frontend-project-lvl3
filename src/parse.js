@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 const parseFeed = (doc) => {
   const obj = {
-    feedParsed: {
+    feedsParsed: {
       title: '',
       description: '',
     },
@@ -23,8 +23,8 @@ const parseFeed = (doc) => {
       description: descrip[0].textContent,
       idPost: _.uniqueId(),
     };
-    obj.feedParsed.title = feedTitle.textContent;
-    obj.feedParsed.description = feedDescription.textContent;
+    obj.feedsParsed.title = feedTitle.textContent;
+    obj.feedsParsed.description = feedDescription.textContent;
     obj.postsParsed.push(post);
   });
   if (_.isEmpty(posts)) {

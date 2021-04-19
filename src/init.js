@@ -9,6 +9,7 @@ import validate from './validate.js';
 import timeOut from './timeOut.js';
 
 export default () => {
+  const urls = [];
   const elements = {
     form: document.querySelector('.form'),
     feedsContainer: document.querySelector('.feeds'),
@@ -23,15 +24,15 @@ export default () => {
   };
 
   const state = {
-    url: '',
-    feeds: {},
+    feeds: [],
     posts: [],
     formProcess: {
       status: '',
-      errors: {},
+      error: '',
     },
     loadingProcess: {
-      status: 'filling',
+      status: '',
+      error: '',
     },
     UI: {
       modalPostId: null,
@@ -40,40 +41,39 @@ export default () => {
     },
   };
 
-  const watchedState = onChange(state, (path, value) => render(state.posts, path, value, elements));
+  const watchedState = onChange(state, (path, value) => render(state, path, value, elements));
 
   const { form } = elements;
-  const arr = [];
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const { input } = elements;
     const url = input.value.trim();
-    watchedState.loadingProcess.status = 'filling';
+    watchedState.loadingProcess.status = 'loading';
     watchedState.formProcess.status = '';
-    watchedState.url = url;
-    const errors = validate(watchedState.url, arr);
+    const errors = validate(url, urls);
     if (!_.isEmpty(errors)) {
       if (_.includes('ValidationError: this must be a valid URL', errors)) {
         watchedState.loadingProcess.status = 'finished';
-        watchedState.formProcess.errors = 'key4';
+        watchedState.formProcess.error = 'key4';
       } if (_.includes(`ValidationError: this must not be one of the following values: ${url}`, errors)) {
         watchedState.loadingProcess.status = 'finished';
-        watchedState.formProcess.errors = 'key2';
+        watchedState.formProcess.error = 'key2';
       }
     } else {
-      arr.push(url);
       axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}&disableCache=true`)
         .then((response) => {
           watchedState.loadingProcess.status = 'finished';
           const domparser = new DOMParser();
           const parsedFeed = parseFeed(domparser.parseFromString(response.data.contents, 'text/xml'));
           if (_.isEmpty(parsedFeed)) {
-            watchedState.formProcess.errors = 'key8';
+            watchedState.loadingProcess.error = 'key8';
           } else {
-            watchedState.feeds = parsedFeed.feedParsed;
-            watchedState.posts = parsedFeed.postsParsed;
+            urls.push(url);
+            watchedState.feeds.push(parsedFeed.feedsParsed);
+            watchedState.posts.push(parsedFeed.postsParsed);
             watchedState.formProcess.status = 'key3';
+            timeOut(urls, watchedState, state);
             const buttons = document.querySelectorAll('.btn');
             Array.from(buttons).forEach((btn) => {
               btn.addEventListener('click', () => {
@@ -97,12 +97,11 @@ export default () => {
                 watchedState.UI.modalHidden = true;
               });
             });
-            timeOut(url, watchedState);
           }
         })
         .catch(() => {
           watchedState.loadingProcess.status = 'finished';
-          watchedState.formProcess.errors = 'key1';
+          watchedState.formProcess.error = 'key1';
         });
     }
   });

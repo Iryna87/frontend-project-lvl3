@@ -21,7 +21,7 @@ i18n.init({
 });
 
 const modalData = (id, initState) => {
-  const data = initState.find((post) => parseInt(post.idPost, 10) === id);
+  const data = _.flatten(initState).find((post) => parseInt(post.idPost, 10) === id);
   return {
     title: data.title,
     description: data.description,
@@ -41,6 +41,12 @@ const changeFontClass = (ids) => {
   });
 };
 
+const setAttribute = (el, attributes) => {
+  attributes.forEach((atrr) => {
+    el.setAttribute(atrr[0], atrr[1]);
+  });
+};
+
 const render = (state, path, value, elements) => {
   const ul = document.createElement('ul');
   const h3 = document.createElement('h3');
@@ -57,34 +63,30 @@ const render = (state, path, value, elements) => {
       if (feedsContainer.textContent === '') {
         feedsContainer.prepend(h2feeds);
       }
+      Array.from(value).forEach((item) => {
+        p.setAttribute('class', 'feed');
+        p.textContent = `${item.title.trim()}`;
+        h3.textContent = `${item.description.trim()}`;
+        ul.prepend(p, h3);
+      });
       h2feeds.textContent = i18n.t('key6');
-      p.setAttribute('class', 'feed');
-      p.textContent = `${value.title.trim()}`;
-      h3.textContent = `${value.description.trim()}`;
-      ul.prepend(p, h3);
       feedsContainer.append(ul);
       break;
     case 'posts':
-      Array.from(value).forEach((item) => {
-        if (postsContainer.textContent === '') {
-          h2posts.textContent = i18n.t('key7');
-        }
+      postsContainer.textContent = '';
+      h2posts.textContent = i18n.t('key7');
+      Array.from(_.flatten(value)).forEach((item) => {
+        const btnAttrs = [['class', 'btn'], ['idPost', item.idPost], ['data-toggle', 'modal'], ['data-target', '#modal'], ['type', 'submit']];
+        const postAttrs = [['class', 'font-weight-bold'], ['href', item.url.trim()], ['target', '_blanck'], ['idPost', item.idPost]];
         const ul1 = document.createElement('ul');
         const li = document.createElement('li');
         li.setAttribute('class', 'post');
         const a = document.createElement('a');
         const btn = document.createElement('button');
         btn.textContent = i18n.t('key5');
-        btn.setAttribute('class', 'btn');
-        btn.setAttribute('idPost', item.idPost);
-        btn.setAttribute('data-toggle', 'modal');
-        btn.setAttribute('data-target', '#modal');
-        btn.setAttribute('type', 'submit');
+        setAttribute(btn, btnAttrs);
         a.textContent = `${item.title.trim()}`;
-        a.setAttribute('class', 'font-weight-bold');
-        a.setAttribute('href', item.url.trim());
-        a.setAttribute('target', '_blanck');
-        a.setAttribute('idPost', item.idPost);
+        setAttribute(a, postAttrs);
         li.prepend(a, btn);
         ul1.prepend(li);
         postsContainer.prepend(h2posts);
@@ -98,14 +100,15 @@ const render = (state, path, value, elements) => {
       feedback.classList.add('is-valid');
       feedback.textContent = i18n.t(`${value}`);
       break;
-    case 'formProcess.errors':
+    case 'formProcess.error':
       input.classList.add('is-invalid');
       feedback.classList.remove('is-valid');
       feedback.classList.add('is-invalid');
       feedback.textContent = i18n.t(`${value}`);
       break;
     case 'loadingProcess.status':
-      if (value === 'filling') {
+      input.value = '';
+      if (value === 'loading') {
         input.setAttribute('readonly', true);
         button.setAttribute('disabled', true);
       } if (value === 'finished') {
@@ -113,14 +116,20 @@ const render = (state, path, value, elements) => {
         button.removeAttribute('disabled');
       }
       break;
+    case 'loadingProcess.error':
+      input.classList.add('is-invalid');
+      feedback.classList.remove('is-valid');
+      feedback.classList.add('is-invalid');
+      feedback.textContent = i18n.t(`${value}`);
+      break;
     case 'UI.modalPostId':
       if (value !== null) {
         modal.classList.remove('hidden');
         fade.classList.add('on');
         document.body.classList.add('on');
-        tModal.textContent = modalData(value, state).title;
-        dModal.textContent = modalData(value, state).description;
-        dModal.setAttribute('href', modalData(value, state).url);
+        tModal.textContent = modalData(value, state.posts).title;
+        dModal.textContent = modalData(value, state.posts).description;
+        dModal.setAttribute('href', modalData(value, state.posts).url);
       }
       break;
     case 'UI.seenPostsId':
