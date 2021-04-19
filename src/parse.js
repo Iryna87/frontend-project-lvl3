@@ -5,6 +5,8 @@ const parseFeed = (doc) => {
     feedsParsed: {
       title: '',
       description: '',
+      url: '',
+      idFeed: '',
     },
     postsParsed: [],
   };
@@ -14,6 +16,7 @@ const parseFeed = (doc) => {
   const descriptions = doc.getElementsByTagName('description');
   const feedTitle = Array.from(titles)[0];
   const feedDescription = Array.from(descriptions)[0];
+  const idFeed = _.uniqueId();
   Array.from(posts).forEach((item) => {
     const descrip = item.getElementsByTagName('description');
     const arr = item.textContent.split('\n');
@@ -22,9 +25,12 @@ const parseFeed = (doc) => {
       url: arr[3].trim(),
       description: descrip[0].textContent,
       idPost: _.uniqueId(),
+      idFeed,
     };
     obj.feedsParsed.title = feedTitle.textContent;
     obj.feedsParsed.description = feedDescription.textContent;
+    obj.feedsParsed.idFeed = idFeed;
+    obj.feedsParsed.url = arr[3].trim();
     obj.postsParsed.push(post);
   });
   if (_.isEmpty(posts)) {
