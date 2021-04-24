@@ -9,7 +9,6 @@ import validate from './validate.js';
 import timeOut from './timeOut.js';
 
 export default () => {
-  const urls = [];
   const elements = {
     form: document.querySelector('.form'),
     feedsContainer: document.querySelector('.feeds'),
@@ -24,6 +23,7 @@ export default () => {
   };
 
   const state = {
+    urls: [],
     feeds: [],
     posts: [],
     formProcess: {
@@ -51,7 +51,7 @@ export default () => {
     const url = input.value.trim();
     watchedState.loadingProcess.status = 'loading';
     watchedState.formProcess.status = '';
-    const errors = validate(url, urls);
+    const errors = validate(url, watchedState.urls);
     if (!_.isEmpty(errors)) {
       if (_.includes('ValidationError: this must be a valid URL', errors)) {
         watchedState.loadingProcess.status = 'finished';
@@ -65,15 +65,16 @@ export default () => {
         .then((response) => {
           watchedState.loadingProcess.status = 'finished';
           const domparser = new DOMParser();
-          const parsedFeed = parseFeed(domparser.parseFromString(response.data.contents, 'text/xml'));
+          const idFeed = _.uniqueId();
+          const parsedFeed = parseFeed(domparser.parseFromString(response.data.contents, 'text/xml'), url, idFeed);
           if (_.isEmpty(parsedFeed)) {
             watchedState.loadingProcess.error = 'key8';
           } else {
-            urls.push(url);
+            watchedState.urls.push(url);
             watchedState.feeds.push(parsedFeed.feedsParsed);
             watchedState.posts.push(parsedFeed.postsParsed);
             watchedState.formProcess.status = 'key3';
-            timeOut(urls, watchedState, state);
+            timeOut(watchedState, state);
             const buttons = document.querySelectorAll('.btn');
             Array.from(buttons).forEach((btn) => {
               btn.addEventListener('click', () => {

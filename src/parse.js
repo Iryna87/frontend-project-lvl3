@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const parseFeed = (doc) => {
+const parseFeed = (doc, url, idFeed) => {
   const obj = {
     feedsParsed: {
       title: '',
@@ -16,7 +16,6 @@ const parseFeed = (doc) => {
   const descriptions = doc.getElementsByTagName('description');
   const feedTitle = Array.from(titles)[0];
   const feedDescription = Array.from(descriptions)[0];
-  const idFeed = _.uniqueId();
   Array.from(posts).forEach((item) => {
     const descrip = item.getElementsByTagName('description');
     const arr = item.textContent.split('\n');
@@ -30,7 +29,7 @@ const parseFeed = (doc) => {
     obj.feedsParsed.title = feedTitle.textContent;
     obj.feedsParsed.description = feedDescription.textContent;
     obj.feedsParsed.idFeed = idFeed;
-    obj.feedsParsed.url = arr[3].trim();
+    obj.feedsParsed.url = url;
     obj.postsParsed.push(post);
   });
   if (_.isEmpty(posts)) {
