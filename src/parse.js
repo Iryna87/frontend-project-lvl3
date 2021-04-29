@@ -19,10 +19,6 @@ const parseFeed = (rss, url, idFeed) => {
   const descriptions = doc.getElementsByTagName('description');
   const title = Array.from(titles)[0];
   const description = Array.from(descriptions)[0];
-  obj.feedsParsed.title = title.textContent;
-  obj.feedsParsed.description = description.textContent;
-  obj.feedsParsed.idFeed = idFeed;
-  obj.feedsParsed.url = url;
   Array.from(items).forEach((item) => {
     const descrip = item.getElementsByTagName('description');
     const arr = item.textContent.split('\n');
@@ -33,6 +29,10 @@ const parseFeed = (rss, url, idFeed) => {
       idPost: _.uniqueId(),
       idFeed,
     };
+    obj.feedsParsed.title = title.textContent;
+    obj.feedsParsed.description = description.textContent;
+    obj.feedsParsed.idFeed = idFeed;
+    obj.feedsParsed.url = url;
     obj.postsParsed.push(post);
   });
   if (_.isEmpty(items)) {
