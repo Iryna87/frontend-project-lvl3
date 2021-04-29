@@ -10,8 +10,7 @@ export default (watchedState, state) => {
       axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(feed.url)}&disableCache=true`)
         .then((response) => {
           watchedState.loadingProcess.status = 'finished';
-          const domparser = new DOMParser();
-          const parsedFeed = parseFeed(domparser.parseFromString(response.data.contents, 'text/xml'), feed.url, feed.idFeed);
+          const parsedFeed = parseFeed(response.data.contents, feed.url, feed.idFeed);
           if (_.isEmpty(parsedFeed)) {
             watchedState.loadingProcess.error = 'key8';
           } else {
@@ -26,7 +25,7 @@ export default (watchedState, state) => {
         })
         .catch(() => {
           watchedState.loadingProcess.status = 'finished';
-          watchedState.formProcess.errors = 'key1';
+          watchedState.formProcess.error = 'key1';
         });
       setTimeout(getData, 5000);
     });

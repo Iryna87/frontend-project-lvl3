@@ -1,6 +1,9 @@
 import _ from 'lodash';
+import DOMParser from 'dom-parser';
 
-const parseFeed = (doc, url, idFeed) => {
+const parseFeed = (rss, url, idFeed) => {
+  const domparser = new DOMParser();
+  const doc = domparser.parseFromString(rss, 'text/xml');
   const obj = {
     feedsParsed: {
       title: '',
@@ -11,12 +14,16 @@ const parseFeed = (doc, url, idFeed) => {
     postsParsed: [],
   };
 
-  const posts = doc.getElementsByTagName('item');
+  const items = doc.getElementsByTagName('item');
   const titles = doc.getElementsByTagName('title');
   const descriptions = doc.getElementsByTagName('description');
-  const feedTitle = Array.from(titles)[0];
-  const feedDescription = Array.from(descriptions)[0];
-  Array.from(posts).forEach((item) => {
+  const title = Array.from(titles)[0];
+  const description = Array.from(descriptions)[0];
+  obj.feedsParsed.title = title.textContent;
+  obj.feedsParsed.description = description.textContent;
+  obj.feedsParsed.idFeed = idFeed;
+  obj.feedsParsed.url = url;
+  Array.from(items).forEach((item) => {
     const descrip = item.getElementsByTagName('description');
     const arr = item.textContent.split('\n');
     const post = {
@@ -26,13 +33,9 @@ const parseFeed = (doc, url, idFeed) => {
       idPost: _.uniqueId(),
       idFeed,
     };
-    obj.feedsParsed.title = feedTitle.textContent;
-    obj.feedsParsed.description = feedDescription.textContent;
-    obj.feedsParsed.idFeed = idFeed;
-    obj.feedsParsed.url = url;
     obj.postsParsed.push(post);
   });
-  if (_.isEmpty(posts)) {
+  if (_.isEmpty(items)) {
     return {};
   }
   return obj;

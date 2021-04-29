@@ -98,16 +98,21 @@ const render = (state, path, value, elements) => {
       input.classList.remove('is-invalid');
       feedback.classList.remove('is-invalid');
       feedback.classList.add('is-valid');
-      feedback.textContent = i18n.t(`${value}`);
+      if (value !== 'waiting') {
+        feedback.textContent = i18n.t(`${value}`);
+      } if (value === 'waiting') {
+        feedback.textContent = '';
+      }
       break;
     case 'formProcess.error':
       input.classList.add('is-invalid');
       feedback.classList.remove('is-valid');
       feedback.classList.add('is-invalid');
-      feedback.textContent = i18n.t(`${value}`);
+      if (value !== null) {
+        feedback.textContent = i18n.t(`${value}`);
+      }
       break;
     case 'loadingProcess.status':
-      input.value = '';
       if (value === 'loading') {
         input.setAttribute('readonly', true);
         button.setAttribute('disabled', true);
@@ -120,7 +125,9 @@ const render = (state, path, value, elements) => {
       input.classList.add('is-invalid');
       feedback.classList.remove('is-valid');
       feedback.classList.add('is-invalid');
-      feedback.textContent = i18n.t(`${value}`);
+      if (value !== null) {
+        feedback.textContent = i18n.t(`${value}`);
+      }
       break;
     case 'UI.modalPostId':
       if (value !== null) {

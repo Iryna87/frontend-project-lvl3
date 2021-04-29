@@ -2,13 +2,13 @@
 import _ from 'lodash';
 import onChange from 'on-change';
 import axios from 'axios';
-import DOMParser from 'dom-parser';
 import render from './view.js';
 import parseFeed from './parse.js';
 import validate from './validate.js';
 import timeOut from './timeOut.js';
 
 export default () => {
+  const urls = [];
   const elements = {
     form: document.querySelector('.form'),
     feedsContainer: document.querySelector('.feeds'),
@@ -23,16 +23,15 @@ export default () => {
   };
 
   const state = {
-    urls: [],
     feeds: [],
     posts: [],
     formProcess: {
-      status: '',
-      error: '',
+      status: 'waiting',
+      error: null,
     },
     loadingProcess: {
-      status: '',
-      error: '',
+      status: 'waiting',
+      error: null,
     },
     UI: {
       modalPostId: null,
@@ -50,8 +49,8 @@ export default () => {
     const { input } = elements;
     const url = input.value.trim();
     watchedState.loadingProcess.status = 'loading';
-    watchedState.formProcess.status = '';
-    const errors = validate(url, watchedState.urls);
+    watchedState.formProcess.status = 'waiting';
+    const errors = validate(url, urls);
     if (!_.isEmpty(errors)) {
       if (_.includes('ValidationError: this must be a valid URL', errors)) {
         watchedState.loadingProcess.status = 'finished';
@@ -64,13 +63,12 @@ export default () => {
       axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}&disableCache=true`)
         .then((response) => {
           watchedState.loadingProcess.status = 'finished';
-          const domparser = new DOMParser();
           const idFeed = _.uniqueId();
-          const parsedFeed = parseFeed(domparser.parseFromString(response.data.contents, 'text/xml'), url, idFeed);
+          const parsedFeed = parseFeed(response.data.contents, url, idFeed);
           if (_.isEmpty(parsedFeed)) {
             watchedState.loadingProcess.error = 'key8';
           } else {
-            watchedState.urls.push(url);
+            urls.push(url);
             watchedState.feeds.push(parsedFeed.feedsParsed);
             watchedState.posts.push(parsedFeed.postsParsed);
             watchedState.formProcess.status = 'key3';
