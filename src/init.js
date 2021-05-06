@@ -8,7 +8,6 @@ import validate from './validate.js';
 import timeOut from './timeOut.js';
 
 export default () => {
-  const urls = [];
   const elements = {
     form: document.querySelector('.form'),
     feedsContainer: document.querySelector('.feeds'),
@@ -46,10 +45,11 @@ export default () => {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const { input } = elements;
-    const url = input.value.trim();
     watchedState.loadingProcess.status = 'loading';
     watchedState.formProcess.status = 'waiting';
+    const { input } = elements;
+    const url = input.value.trim();
+    const urls = state.feeds.map((feed) => feed.url);
     const errors = validate(url, urls);
     if (!_.isEmpty(errors)) {
       if (_.includes('ValidationError: this must be a valid URL', errors)) {
@@ -68,7 +68,6 @@ export default () => {
           if (_.isEmpty(parsedFeed)) {
             watchedState.loadingProcess.error = 'key8';
           } else {
-            urls.push(url);
             watchedState.feeds.push(parsedFeed.feedsParsed);
             watchedState.posts.push(parsedFeed.postsParsed);
             watchedState.formProcess.status = 'key3';
