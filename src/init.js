@@ -60,8 +60,8 @@ export default () => {
           if (_.isEmpty(parsedFeed)) {
             watchedState.loadingProcess.error = 'validation_content_error';
           } else {
-            watchedState.feeds.push(parsedFeed.feedsParsed);
-            watchedState.posts.push(parsedFeed.postsParsed);
+            watchedState.feeds.unshift(parsedFeed.feedsParsed);
+            watchedState.posts.unshift(parsedFeed.postsParsed);
             watchedState.formProcess.status = 'loading_success';
             postsContainer.addEventListener('click', (el) => {
               watchedState.UI.modalPostId = parseInt(el.target.getAttribute('idpost'), 10);
