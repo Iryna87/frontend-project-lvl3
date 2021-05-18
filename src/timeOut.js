@@ -15,7 +15,9 @@ export default (watchedState, state) => {
             const a = !posts.map((elm1) => elm1.title.trim()).includes(elm.title.trim());
             return a;
           });
-          watchedState.posts.push(result);
+          if (result.length !== 0) {
+            watchedState.posts.push(result);
+          }
         });
       setTimeout(getData, 5000);
     });

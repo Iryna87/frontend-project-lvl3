@@ -21,7 +21,7 @@
   "dependencies": {
     "@popperjs/core": "^2.9.1",
     "axios": "^0.21.1",
-    "bootstrap": "^5.0.0-beta2",
+    "bootstrap": "^4.6.0",
     "dom-parser": "^0.1.6",
     "i18next": "^19.9.2",
     "lodash": "^4.17.21",
@@ -40,6 +40,8 @@
     "jest-cli": "^26.6.3",
     "jquery": "^3.6.0",
     "popper.js": "^1.16.1",
+    "sass": "^1.32.12",
+    "sass-loader": "^11.1.0",
     "style-loader": "^2.0.0",
     "vercel": "^21.3.2",
     "webpack": "^5.24.2",

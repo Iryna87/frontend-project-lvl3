@@ -7,7 +7,7 @@ export default (str, urls) => {
     .notOneOf(urls);
   try {
     schema.validateSync(str);
-    return {};
+    return null;
   } catch (err) {
     return err;
   }

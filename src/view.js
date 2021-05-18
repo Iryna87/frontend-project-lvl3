@@ -7,14 +7,16 @@ i18n.init({
   resources: {
     ru: {
       translation: {
-        key1: 'Ошибка сети',
-        key2: 'RSS уже существует',
-        key3: 'RSS успешно загружен',
-        key4: 'Ссылка должна быть валидным URL',
-        key5: 'Просмотр',
-        key6: 'Фиды',
-        key7: 'Посты',
-        key8: 'Ресурс не содержит валидный RSS',
+        network_error: 'Ошибка сети',
+        loading_success: 'RSS успешно загружен',
+        validation_double_error: 'RSS уже существует',
+        validation_unknown_error: 'Неизвстная ошибка валидации',
+        validation_required_error: 'Поле не должно быть пустым',
+        validation_url_error: 'Ссылка должна быть валидным URL',
+        validation_content_error: 'Ресурс не содержит валидный RSS',
+        button_watch_name: 'Просмотр',
+        feeds_container_name: 'Фиды',
+        posts_container_name: 'Посты',
       },
     },
   },
@@ -47,54 +49,57 @@ const setAttribute = (el, attributes) => {
   });
 };
 
-const render = (state, path, value, elements) => {
+export default (state, path, value, elements) => {
   const ul = document.createElement('ul');
-  const h3 = document.createElement('h3');
-  const p = document.createElement('p');
+  const ul1 = document.createElement('ul');
   const h2feeds = document.createElement('h2');
   const h2posts = document.createElement('h2');
   const {
-    feedsContainer, postsContainer, input, button, feedback, tModal, dModal, modal, fade,
+    feedsContainer, postsContainer, input, button, feedback, titleModal, descriptionModal,
   } = elements;
 
   switch (path) {
     case 'feeds':
       input.value = '';
-      if (feedsContainer.textContent === '') {
-        feedsContainer.prepend(h2feeds);
-      }
-      Array.from(value).forEach((item) => {
-        p.setAttribute('class', 'feed');
+      feedsContainer.textContent = '';
+      feedsContainer.prepend(h2feeds);
+      h2feeds.textContent = i18n.t('feeds_container_name');
+      Array.from(_.reverse(value)).forEach((item) => {
+        const li = document.createElement('li');
+        const h3 = document.createElement('h3');
+        const p = document.createElement('p');
         p.textContent = `${item.title.trim()}`;
         h3.textContent = `${item.description.trim()}`;
-        ul.prepend(p, h3);
+        p.setAttribute('class', 'feed');
+        li.setAttribute('class', 'list-group-item');
+        li.prepend(p, h3);
+        ul.setAttribute('class', 'list-group mb-5');
+        ul.prepend(li);
       });
-      h2feeds.textContent = i18n.t('key6');
       feedsContainer.append(ul);
       break;
     case 'posts':
       postsContainer.textContent = '';
-      h2posts.textContent = i18n.t('key7');
-      Array.from(_.flatten(value)).forEach((item) => {
-        const btnAttrs = [['class', 'btn'], ['idPost', item.idPost], ['data-toggle', 'modal'], ['data-target', '#modal'], ['type', 'submit']];
-        const postAttrs = [['class', 'font-weight-bold'], ['href', item.url.trim()], ['target', '_blanck'], ['idPost', item.idPost]];
-        const ul1 = document.createElement('ul');
-        const li = document.createElement('li');
-        li.setAttribute('class', 'post');
+      postsContainer.prepend(h2posts);
+      h2posts.textContent = i18n.t('posts_container_name');
+      Array.from(_.flatten(_.reverse(value))).forEach((item) => {
+        const btnAttrs = [['class', 'btn btn-primary btn-sm'], ['idPost', item.idPost], ['data-toggle', 'modal'], ['data-target', '#modal'], ['type', 'submit']];
+        const postAttrs = [['class', 'font-weight-bold'], ['href', item.url.trim()], ['target', '_blanck'], ['idPost', item.idPost], ['rel', 'noopener noreferrer']];
         const a = document.createElement('a');
         const btn = document.createElement('button');
-        btn.textContent = i18n.t('key5');
-        setAttribute(btn, btnAttrs);
+        const li1 = document.createElement('li');
+        btn.textContent = i18n.t('button_watch_name');
         a.textContent = `${item.title.trim()}`;
+        setAttribute(btn, btnAttrs);
         setAttribute(a, postAttrs);
-        li.prepend(a, btn);
-        ul1.prepend(li);
-        postsContainer.prepend(h2posts);
-        postsContainer.append(ul1);
+        li1.setAttribute('class', 'list-group-item d-flex justify-content-between align-items-start');
+        li1.prepend(a, btn);
+        ul1.setAttribute('class', 'list-group');
+        ul1.prepend(li1);
       });
+      postsContainer.append(ul1);
       break;
     case 'formProcess.status':
-      input.value = '';
       input.classList.remove('is-invalid');
       feedback.classList.remove('is-invalid');
       feedback.classList.add('is-valid');
@@ -131,27 +136,15 @@ const render = (state, path, value, elements) => {
       break;
     case 'UI.modalPostId':
       if (value !== null) {
-        modal.classList.remove('hidden');
-        fade.classList.add('on');
-        document.body.classList.add('on');
-        tModal.textContent = modalData(value, state.posts).title;
-        dModal.textContent = modalData(value, state.posts).description;
-        dModal.setAttribute('href', modalData(value, state.posts).url);
+        titleModal.textContent = modalData(value, state.posts).title;
+        descriptionModal.textContent = modalData(value, state.posts).description;
+        descriptionModal.setAttribute('href', modalData(value, state.posts).url);
       }
       break;
     case 'UI.seenPostsId':
       changeFontClass(value);
       break;
-    case 'UI.modalHidden':
-      if (value === true) {
-        modal.classList.add('hidden');
-        fade.classList.remove('on');
-        document.body.classList.remove('on');
-      }
-      break;
     default:
       break;
   }
 };
-
-export default render;

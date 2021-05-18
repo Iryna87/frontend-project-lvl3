@@ -8,7 +8,7 @@ const parseFeed = (rss, url, idFeed) => {
     feedsParsed: {
       title: '',
       description: '',
-      url: '',
+      url: null,
       idFeed: '',
     },
     postsParsed: [],
