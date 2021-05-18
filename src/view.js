@@ -64,7 +64,7 @@ export default (state, path, value, elements) => {
       feedsContainer.textContent = '';
       feedsContainer.prepend(h2feeds);
       h2feeds.textContent = i18n.t('feeds_container_name');
-      Array.from(_.reverse(value)).forEach((item) => {
+      Array.from(value).forEach((item) => {
         const li = document.createElement('li');
         const h3 = document.createElement('h3');
         const p = document.createElement('p');
@@ -82,7 +82,7 @@ export default (state, path, value, elements) => {
       postsContainer.textContent = '';
       postsContainer.prepend(h2posts);
       h2posts.textContent = i18n.t('posts_container_name');
-      Array.from(_.flatten(_.reverse(value))).forEach((item) => {
+      Array.from(_.flatten(value)).forEach((item) => {
         const btnAttrs = [['class', 'btn btn-primary btn-sm'], ['idPost', item.idPost], ['data-toggle', 'modal'], ['data-target', '#modal'], ['type', 'submit']];
         const postAttrs = [['class', 'font-weight-bold'], ['href', item.url.trim()], ['target', '_blanck'], ['idPost', item.idPost], ['rel', 'noopener noreferrer']];
         const a = document.createElement('a');
