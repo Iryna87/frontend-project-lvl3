@@ -5,7 +5,8 @@ import axios from 'axios';
 import render from './view.js';
 import parseFeed from './parse.js';
 import validate from './validate.js';
-import validateErrors from './validateErrors.js';
+import displayErrors from './displayErrors.js';
+import proxifyURL from './proxifyURL.js';
 import timeOut from './timeOut.js';
 
 export default () => {
@@ -18,6 +19,7 @@ export default () => {
     feedback: document.querySelector('.feedback'),
     titleModal: document.querySelector('.modal-title'),
     descriptionModal: document.querySelector('.modal-body'),
+    footerModal: document.querySelector('.modal-footer .btn'),
   };
 
   const state = {
@@ -39,46 +41,41 @@ export default () => {
 
   const watchedState = onChange(state, (path, value) => render(state, path, value, elements));
 
-  const { form, postsContainer, descriptionModal } = elements;
+  const { form, postsContainer } = elements;
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    watchedState.loadingProcess.status = 'loading';
-    watchedState.formProcess.status = 'waiting';
+    watchedState.formProcess.status = 'loading';
+    watchedState.loadingProcess.status = 'waiting';
     const formData = new FormData(e.target);
     const { url } = Object.fromEntries(formData);
     const urls = state.feeds.map((feed) => feed.url);
     const validationError = validate(url, urls);
     if (!_.isEmpty(validationError)) {
-      validateErrors(validationError, watchedState);
-    } else {
-      axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}&disableCache=true`)
-        .then((response) => {
-          watchedState.loadingProcess.status = 'finished';
-          const idFeed = _.uniqueId();
-          const parsedFeed = parseFeed(response.data.contents, url, idFeed);
-          if (_.isEmpty(parsedFeed)) {
-            watchedState.loadingProcess.error = 'validation_content_error';
-          } else {
-            watchedState.feeds.unshift(parsedFeed.feedsParsed);
-            watchedState.posts.unshift(parsedFeed.postsParsed);
-            watchedState.formProcess.status = 'loading_success';
-            postsContainer.addEventListener('click', (el) => {
-              watchedState.UI.modalPostId = parseInt(el.target.getAttribute('idpost'), 10);
-              watchedState.UI.seenPostsId.push(state.UI.modalPostId);
-            });
-            const readBtn = document.querySelector('.full-article');
-            readBtn.addEventListener('click', () => {
-              const href = descriptionModal.getAttribute('href');
-              readBtn.setAttribute('href', href);
-            });
-            timeOut(watchedState, state);
-          }
-        })
-        .catch(() => {
-          watchedState.loadingProcess.status = 'finished';
-          watchedState.formProcess.error = 'network_error';
-        });
+      displayErrors(validationError, watchedState);
+      return;
     }
+    axios.get(proxifyURL(url))
+      .then((response) => {
+        watchedState.formProcess.status = 'finished';
+        const idFeed = _.uniqueId();
+        const parsedFeed = parseFeed(response.data.contents, url, idFeed);
+        if (_.isEmpty(parsedFeed)) {
+          watchedState.loadingProcess.error = 'loading_content_error';
+        } else {
+          watchedState.feeds.unshift(parsedFeed.feedsParsed);
+          watchedState.posts.unshift(...parsedFeed.postsParsed);
+          watchedState.loadingProcess.status = 'loading_success';
+          timeOut(watchedState, state);
+        }
+      })
+      .catch(() => {
+        watchedState.loadingProcess.error = 'network_error';
+        watchedState.formProcess.status = 'finished';
+      });
+  });
+  postsContainer.addEventListener('click', (el) => {
+    watchedState.UI.modalPostId = parseInt(el.target.dataset.id, 10);
+    watchedState.UI.seenPostsId.push(state.UI.modalPostId);
   });
 };
