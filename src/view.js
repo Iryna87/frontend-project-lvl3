@@ -1,5 +1,8 @@
 import i18n from 'i18next';
-import _ from 'lodash';
+import {
+  handleFeeds, handlePosts, handleFormProcessStatus,
+  makeInvalid, removeInvalid, modalData, normalizeFontOfReadPosts,
+} from './viewHandlers.js';
 
 i18n.init({
   lng: 'ru',
@@ -22,42 +25,14 @@ i18n.init({
   },
 });
 
-const modalData = (id, initState) => {
-  const data = _.flatten(initState).find((post) => parseInt(post.idPost, 10) === id);
-  return {
-    title: data.title,
-    description: data.description,
-    url: data.url,
-  };
-};
-
-const changeFontClass = (ids) => {
-  const posts = document.querySelectorAll('a');
-  Array.from(posts).forEach((post) => {
-    _.uniq(ids).forEach((id) => {
-      if (parseInt(post.dataset.id, 10) === id) {
-        post.classList.remove('font-weight-bold');
-        post.setAttribute('class', 'normal');
-      }
-    });
-  });
-};
-
-const setAttribute = (el, attributes) => {
-  attributes.forEach(([atrrName, attrValue]) => {
-    el.setAttribute(atrrName, attrValue);
-  });
-};
-
 export default (state, path, value, elements) => {
-  const ul = document.createElement('ul');
-  const ul1 = document.createElement('ul');
-  const h2feeds = document.createElement('h2');
-  const h2posts = document.createElement('h2');
   const {
     feedsContainer, postsContainer, input, button,
     feedback, titleModal, descriptionModal, footerModal,
   } = elements;
+  const h2feeds = document.createElement('h2');
+  const h2posts = document.createElement('h2');
+  const btn = document.createElement('button');
 
   switch (path) {
     case 'feeds':
@@ -65,62 +40,26 @@ export default (state, path, value, elements) => {
       feedsContainer.textContent = '';
       feedsContainer.prepend(h2feeds);
       h2feeds.textContent = i18n.t('feeds_container_name');
-      value.forEach((item) => {
-        const li = document.createElement('li');
-        const h3 = document.createElement('h3');
-        const p = document.createElement('p');
-        p.textContent = `${item.title.trim()}`;
-        h3.textContent = `${item.description.trim()}`;
-        p.setAttribute('class', 'feed');
-        li.setAttribute('class', 'list-group-item');
-        li.prepend(p, h3);
-        ul.setAttribute('class', 'list-group mb-5');
-        ul.append(li);
-      });
-      feedsContainer.append(ul);
+      handleFeeds(value, feedsContainer);
       break;
     case 'posts':
       postsContainer.textContent = '';
       postsContainer.prepend(h2posts);
       h2posts.textContent = i18n.t('posts_container_name');
-      value.forEach((item) => {
-        const btnAttrs = [['class', 'btn btn-primary btn-sm'], ['data-id', item.idPost], ['data-toggle', 'modal'], ['data-target', '#modal'], ['type', 'submit']];
-        const postAttrs = [['class', 'font-weight-bold'], ['href', item.url.trim()], ['target', '_blanck'], ['data-id', item.idPost], ['rel', 'noopener noreferrer']];
-        const a = document.createElement('a');
-        const btn = document.createElement('button');
-        const li1 = document.createElement('li');
-        btn.textContent = i18n.t('button_watch_name');
-        a.textContent = `${item.title.trim()}`;
-        setAttribute(btn, btnAttrs);
-        setAttribute(a, postAttrs);
-        li1.setAttribute('class', 'list-group-item d-flex justify-content-between align-items-start');
-        li1.prepend(a, btn);
-        ul1.setAttribute('class', 'list-group');
-        ul1.append(li1);
-      });
-      postsContainer.append(ul1);
+      btn.textContent = i18n.t('button_watch_name');
+      handlePosts(value, postsContainer, btn);
       break;
     case 'formProcess.status':
-      if (value === 'loading') {
-        input.setAttribute('readonly', true);
-        button.setAttribute('disabled', true);
-      } if (value === 'finished') {
-        input.removeAttribute('readonly');
-        button.removeAttribute('disabled');
-      }
+      handleFormProcessStatus(value, input, button);
       break;
     case 'formProcess.error':
-      input.classList.add('is-invalid');
-      feedback.classList.remove('is-valid');
-      feedback.classList.add('is-invalid');
+      makeInvalid(input, feedback);
       if (value !== null) {
         feedback.textContent = i18n.t(`${value}`);
       }
       break;
     case 'loadingProcess.status':
-      input.classList.remove('is-invalid');
-      feedback.classList.remove('is-invalid');
-      feedback.classList.add('is-valid');
+      removeInvalid(input, feedback);
       if (value !== 'waiting') {
         feedback.textContent = i18n.t(`${value}`);
       } if (value === 'waiting') {
@@ -128,22 +67,21 @@ export default (state, path, value, elements) => {
       }
       break;
     case 'loadingProcess.error':
-      input.classList.add('is-invalid');
-      feedback.classList.remove('is-valid');
-      feedback.classList.add('is-invalid');
       if (value !== null) {
+        makeInvalid(input, feedback);
         feedback.textContent = i18n.t(`${value}`);
       }
       break;
     case 'UI.modalPostId':
       if (value !== null) {
-        titleModal.textContent = modalData(value, state.posts).title;
-        descriptionModal.textContent = modalData(value, state.posts).description;
-        footerModal.setAttribute('href', modalData(value, state.posts).url);
+        const { title, description, url } = modalData(value, state.posts);
+        titleModal.textContent = title;
+        descriptionModal.textContent = description;
+        footerModal.setAttribute('href', url);
       }
       break;
     case 'UI.seenPostsId':
-      changeFontClass(value);
+      normalizeFontOfReadPosts(value);
       break;
     default:
       break;

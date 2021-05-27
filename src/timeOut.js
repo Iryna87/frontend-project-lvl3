@@ -9,7 +9,7 @@ export default (watchedState, state) => {
     state.feeds.forEach((feed) => {
       axios.get(proxifyURL(feed.url))
         .then((response) => {
-          const parsedFeed = parseFeed(response.data.contents, feed.url, feed.idFeed);
+          const parsedFeed = parseFeed(response.data.contents, feed.url);
           const postsNew = parsedFeed.postsParsed;
           const posts = _.flatten(state.posts).filter((post) => post.idFeed === feed.idFeed);
           const result = postsNew.filter((elm) => {

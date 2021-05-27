@@ -1,18 +1,16 @@
 import _ from 'lodash';
 import DOMParser from 'dom-parser';
 
-const parseFeed = (rss, url, idFeed) => {
+const parseFeed = (rss, url) => {
   const domparser = new DOMParser();
   const doc = domparser.parseFromString(rss, 'text/xml');
+  const idFeed = _.uniqueId();
+  console.log(doc);
   const obj = {
-    feedsParsed: {
-      title: '',
-      description: '',
-      url: null,
-      idFeed: '',
-    },
+    feedsParsed: {},
     postsParsed: [],
   };
+  console.log(obj);
 
   const items = doc.getElementsByTagName('item');
   const titles = doc.getElementsByTagName('title');
