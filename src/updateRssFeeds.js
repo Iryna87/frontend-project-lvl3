@@ -9,7 +9,7 @@ export default (watchedState, state) => {
     state.feeds.forEach((feed) => {
       axios.get(proxifyURL(feed.url))
         .then((response) => {
-          const parsedFeed = parseFeed(response.data.contents, feed.url);
+          const parsedFeed = parseFeed(response.data.contents);
           const postsNew = parsedFeed.postsParsed;
           const posts = _.flatten(state.posts).filter((post) => post.idFeed === feed.idFeed);
           const result = postsNew.filter((elm) => {
@@ -17,7 +17,7 @@ export default (watchedState, state) => {
             return a;
           });
           if (result.length !== 0) {
-            watchedState.posts.push(result);
+            watchedState.posts.unshift(result);
           }
         });
       setTimeout(getData, 5000);

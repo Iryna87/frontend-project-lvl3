@@ -1,3 +1,4 @@
+/* eslint no-param-reassign: ["error", { "props": false }] */
 import _ from 'lodash';
 
 const setAttribute = (el, attributes) => {
@@ -23,13 +24,15 @@ const handleFeeds = (feeds, feedsContainer) => {
   });
 };
 
-const handlePosts = (posts, postsContainer, btn) => {
+const handlePosts = (posts, postsContainer, translate) => {
   const ul1 = document.createElement('ul');
   posts.forEach((item) => {
     const btnAttrs = [['class', 'btn btn-primary btn-sm'], ['data-id', item.idPost], ['data-toggle', 'modal'], ['data-target', '#modal'], ['type', 'submit']];
     const postAttrs = [['class', 'font-weight-bold'], ['href', item.url.trim()], ['target', '_blanck'], ['data-id', item.idPost], ['rel', 'noopener noreferrer']];
     const a = document.createElement('a');
+    const btn = document.createElement('button');
     const li1 = document.createElement('li');
+    btn.textContent = translate('button_watch_name');
     a.textContent = `${item.title.trim()}`;
     setAttribute(btn, btnAttrs);
     setAttribute(a, postAttrs);
@@ -41,13 +44,18 @@ const handlePosts = (posts, postsContainer, btn) => {
   });
 };
 
-const handleFormProcessStatus = (status, input, button) => {
+const handleLoadingProcessStatus = (status, input, button, feedback, translate) => {
   if (status === 'loading') {
     input.setAttribute('readonly', true);
     button.setAttribute('disabled', true);
   } if (status === 'finished') {
     input.removeAttribute('readonly');
     button.removeAttribute('disabled');
+  }
+  if (status === 'loading_success') {
+    feedback.textContent = translate(`${status}`);
+  } if (status === 'waiting') {
+    feedback.textContent = '';
   }
 };
 
@@ -84,6 +92,6 @@ const normalizeFontOfReadPosts = (readPostsIds) => {
 };
 
 export {
-  handleFeeds, handlePosts, handleFormProcessStatus,
+  handleFeeds, handlePosts, handleLoadingProcessStatus,
   makeInvalid, removeInvalid, modalData, normalizeFontOfReadPosts,
 };

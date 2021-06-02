@@ -1,42 +1,41 @@
 import _ from 'lodash';
 import DOMParser from 'dom-parser';
 
-const parseFeed = (rss, url) => {
+const parseFeed = (rss) => {
   const domparser = new DOMParser();
   const doc = domparser.parseFromString(rss, 'text/xml');
-  const idFeed = _.uniqueId();
-  console.log(doc);
-  const obj = {
-    feedsParsed: {},
-    postsParsed: [],
-  };
-  console.log(obj);
-
   const items = doc.getElementsByTagName('item');
-  const titles = doc.getElementsByTagName('title');
-  const descriptions = doc.getElementsByTagName('description');
-  const title = Array.from(titles)[0];
-  const description = Array.from(descriptions)[0];
-  Array.from(items).forEach((item) => {
-    const descrip = item.getElementsByTagName('description');
-    const arr = item.textContent.split('\n');
-    const post = {
-      title: arr[1].trim(),
-      url: arr[3].trim(),
-      description: descrip[0].textContent,
-      idPost: _.uniqueId(),
-      idFeed,
-    };
-    obj.feedsParsed.title = title.textContent;
-    obj.feedsParsed.description = description.textContent;
-    obj.feedsParsed.idFeed = idFeed;
-    obj.feedsParsed.url = url;
-    obj.postsParsed.push(post);
-  });
   if (_.isEmpty(items)) {
     return {};
   }
-  return obj;
+  const channel = doc.getElementsByTagName('channel');
+  const title = channel[0].getElementsByTagName('title')[0].textContent.trim();
+  const description = channel[0].getElementsByTagName('description')[0].textContent.trim();
+  const idFeed = _.uniqueId();
+  const postsParsed = [];
+
+  [...items].forEach((item) => {
+    const descriptionPost = item.getElementsByTagName('description')[0];
+    const titlePost = item.getElementsByTagName('title')[0];
+    const arr = item.textContent.split('\n');
+    const post = {
+      title: titlePost.textContent.trim(),
+      url: arr[3].trim(),
+      description: descriptionPost.textContent.trim(),
+      idPost: _.uniqueId(),
+      idFeed,
+    };
+    postsParsed.push(post);
+  });
+  if (_.isEmpty(postsParsed)) {
+    return {};
+  }
+  return {
+    title,
+    description,
+    idFeed,
+    postsParsed,
+  };
 };
 
 export default parseFeed;

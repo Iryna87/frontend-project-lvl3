@@ -7,18 +7,25 @@ import proxifyURL from './proxifyURL.js';
 export default (watchedState, url) => {
   axios.get(proxifyURL(url))
     .then((response) => {
-      watchedState.formProcess.status = 'finished';
-      const parsedFeed = parseFeed(response.data.contents, url);
-      if (_.isEmpty(parsedFeed)) {
+      watchedState.loadingProcess.status = 'finished';
+      const parsed = parseFeed(response.data.contents);
+      const { title, description, idFeed } = parsed;
+      const parsedFeed = {
+        title,
+        description,
+        idFeed,
+        url,
+      };
+      if (_.isEmpty(parsed)) {
         watchedState.loadingProcess.error = 'loading_content_error';
         return;
       }
-      watchedState.feeds.unshift(parsedFeed.feedsParsed);
-      watchedState.posts.unshift(...parsedFeed.postsParsed);
+      watchedState.feeds.unshift(parsedFeed);
+      watchedState.posts.unshift(...parsed.postsParsed);
       watchedState.loadingProcess.status = 'loading_success';
     })
     .catch(() => {
-      watchedState.formProcess.error = 'network_error';
-      watchedState.formProcess.status = 'finished';
+      watchedState.loadingProcess.error = 'network_error';
+      watchedState.loadingProcess.status = 'finished';
     });
 };
