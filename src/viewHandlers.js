@@ -59,7 +59,7 @@ const handlePosts = (posts, elements, translate) => {
   h2posts.textContent = translate('posts_container_name');
   posts.forEach((item) => {
     const btnAttrs = [['class', 'btn btn-primary btn-sm'], ['data-id', item.idPost], ['data-toggle', 'modal'], ['data-target', '#modal'], ['type', 'submit']];
-    const postAttrs = [['class', 'font-weight-bold'], ['href', item.url.trim()], ['target', '_blanck'], ['data-id', item.idPost], ['rel', 'noopener noreferrer']];
+    const postAttrs = [['class', 'fw-bold'], ['href', item.url.trim()], ['target', '_blanck'], ['data-id', item.idPost], ['rel', 'noopener noreferrer']];
     const a = document.createElement('a');
     const btn = document.createElement('button');
     const li1 = document.createElement('li');
@@ -128,7 +128,7 @@ const handleSeenPostsId = (readPostsIds) => {
   [...posts].forEach((post) => {
     _.uniq(readPostsIds).forEach((id) => {
       if (post.dataset.id === id) {
-        post.classList.remove('font-weight-bold');
+        post.classList.remove('fw-bold');
         post.setAttribute('class', 'normal');
       }
     });
