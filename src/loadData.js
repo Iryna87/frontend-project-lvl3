@@ -24,7 +24,8 @@ export default (watchedState, url) => {
       watchedState.posts.unshift(...parsed.postsParsed);
       watchedState.loadingProcess.status = 'loading_success';
     })
-    .catch(() => {
+    .catch((err) => {
+      console.log(err);
       watchedState.loadingProcess.error = 'network_error';
       watchedState.loadingProcess.status = 'finished';
     });

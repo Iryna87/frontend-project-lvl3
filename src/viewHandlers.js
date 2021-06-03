@@ -7,58 +7,6 @@ const setAttribute = (el, attributes) => {
   });
 };
 
-const handleFeeds = (feeds, feedsContainer) => {
-  const ul = document.createElement('ul');
-  feeds.forEach((item) => {
-    const li = document.createElement('li');
-    const h3 = document.createElement('h3');
-    const p = document.createElement('p');
-    p.textContent = `${item.title.trim()}`;
-    h3.textContent = `${item.description.trim()}`;
-    p.setAttribute('class', 'feed');
-    li.setAttribute('class', 'list-group-item');
-    li.prepend(p, h3);
-    ul.setAttribute('class', 'list-group mb-5');
-    ul.append(li);
-    feedsContainer.append(ul);
-  });
-};
-
-const handlePosts = (posts, postsContainer, translate) => {
-  const ul1 = document.createElement('ul');
-  posts.forEach((item) => {
-    const btnAttrs = [['class', 'btn btn-primary btn-sm'], ['data-id', item.idPost], ['data-toggle', 'modal'], ['data-target', '#modal'], ['type', 'submit']];
-    const postAttrs = [['class', 'font-weight-bold'], ['href', item.url.trim()], ['target', '_blanck'], ['data-id', item.idPost], ['rel', 'noopener noreferrer']];
-    const a = document.createElement('a');
-    const btn = document.createElement('button');
-    const li1 = document.createElement('li');
-    btn.textContent = translate('button_watch_name');
-    a.textContent = `${item.title.trim()}`;
-    setAttribute(btn, btnAttrs);
-    setAttribute(a, postAttrs);
-    li1.setAttribute('class', 'list-group-item d-flex justify-content-between align-items-start');
-    li1.prepend(a, btn);
-    ul1.setAttribute('class', 'list-group');
-    ul1.append(li1);
-    postsContainer.append(ul1);
-  });
-};
-
-const handleLoadingProcessStatus = (status, input, button, feedback, translate) => {
-  if (status === 'loading') {
-    input.setAttribute('readonly', true);
-    button.setAttribute('disabled', true);
-  } if (status === 'finished') {
-    input.removeAttribute('readonly');
-    button.removeAttribute('disabled');
-  }
-  if (status === 'loading_success') {
-    feedback.textContent = translate(`${status}`);
-  } if (status === 'waiting') {
-    feedback.textContent = '';
-  }
-};
-
 const makeInvalid = (input, feedback) => {
   input.classList.add('is-invalid');
   feedback.classList.remove('is-valid');
@@ -79,7 +27,103 @@ const modalData = (id, initState) => {
   return data;
 };
 
-const normalizeFontOfReadPosts = (readPostsIds) => {
+const handleFeeds = (feeds, elements, translate) => {
+  const ul = document.createElement('ul');
+  const h2feeds = document.createElement('h2');
+  const { feedsContainer, input } = elements;
+  input.value = '';
+  feedsContainer.textContent = '';
+  feedsContainer.prepend(h2feeds);
+  h2feeds.textContent = translate('feeds_container_name');
+  feeds.forEach((item) => {
+    const li = document.createElement('li');
+    const h3 = document.createElement('h3');
+    const p = document.createElement('p');
+    p.textContent = `${item.title.trim()}`;
+    h3.textContent = `${item.description.trim()}`;
+    p.setAttribute('class', 'feed');
+    li.setAttribute('class', 'list-group-item');
+    li.prepend(p, h3);
+    ul.setAttribute('class', 'list-group mb-5');
+    ul.append(li);
+    feedsContainer.append(ul);
+  });
+};
+
+const handlePosts = (posts, elements, translate) => {
+  const { postsContainer } = elements;
+  const ul1 = document.createElement('ul');
+  const h2posts = document.createElement('h2');
+  postsContainer.textContent = '';
+  postsContainer.prepend(h2posts);
+  h2posts.textContent = translate('posts_container_name');
+  posts.forEach((item) => {
+    const btnAttrs = [['class', 'btn btn-primary btn-sm'], ['data-id', item.idPost], ['data-toggle', 'modal'], ['data-target', '#modal'], ['type', 'submit']];
+    const postAttrs = [['class', 'font-weight-bold'], ['href', item.url.trim()], ['target', '_blanck'], ['data-id', item.idPost], ['rel', 'noopener noreferrer']];
+    const a = document.createElement('a');
+    const btn = document.createElement('button');
+    const li1 = document.createElement('li');
+    btn.textContent = translate('button_watch_name');
+    a.textContent = `${item.title.trim()}`;
+    setAttribute(btn, btnAttrs);
+    setAttribute(a, postAttrs);
+    li1.setAttribute('class', 'list-group-item d-flex justify-content-between align-items-start');
+    li1.prepend(a, btn);
+    ul1.setAttribute('class', 'list-group');
+    ul1.append(li1);
+    postsContainer.append(ul1);
+  });
+};
+
+const handleFormProcessError = (status, elements, translate) => {
+  const { input, feedback } = elements;
+  if (status === null) {
+    removeInvalid(input, feedback);
+    feedback.textContent = '';
+    return;
+  }
+  makeInvalid(input, feedback);
+  feedback.textContent = translate(`${status}`);
+};
+
+const handleLoadingProcessStatus = (status, elements, translate) => {
+  const { input, button, feedback } = elements;
+  if (status === 'loading') {
+    input.setAttribute('readonly', true);
+    button.setAttribute('disabled', true);
+  } if (status === 'finished') {
+    input.removeAttribute('readonly');
+    button.removeAttribute('disabled');
+  }
+  if (status === 'loading_success') {
+    feedback.textContent = translate(`${status}`);
+  } if (status === 'waiting') {
+    feedback.textContent = '';
+  }
+};
+
+const handleLoadingProcessError = (status, elements, translate) => {
+  const { input, feedback } = elements;
+  if (status === null) {
+    removeInvalid(input, feedback);
+    feedback.textContent = '';
+    return;
+  }
+  makeInvalid(input, feedback);
+  feedback.textContent = translate(`${status}`);
+};
+
+const handleModalPostId = (status, elements, state) => {
+  const { titleModal, descriptionModal, footerModal } = elements;
+  if (status !== null) {
+    const { title, description, url } = modalData(status, state.posts);
+    titleModal.textContent = title;
+    descriptionModal.textContent = description;
+    footerModal.setAttribute('href', url);
+  }
+};
+
+const handleSeenPostsId = (readPostsIds) => {
   const posts = document.querySelectorAll('a');
   [...posts].forEach((post) => {
     _.uniq(readPostsIds).forEach((id) => {
@@ -92,6 +136,6 @@ const normalizeFontOfReadPosts = (readPostsIds) => {
 };
 
 export {
-  handleFeeds, handlePosts, handleLoadingProcessStatus,
-  makeInvalid, removeInvalid, modalData, normalizeFontOfReadPosts,
+  handleFeeds, handlePosts, handleLoadingProcessStatus, handleFormProcessError,
+  handleLoadingProcessError, handleModalPostId, handleSeenPostsId,
 };

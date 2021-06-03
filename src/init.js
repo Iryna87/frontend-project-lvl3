@@ -2,11 +2,11 @@
 import _ from 'lodash';
 import onChange from 'on-change';
 import i18n from 'i18next';
-import render from './view.js';
 import validate from './validate.js';
 import displayErrors from './displayErrors.js';
 import loadData from './loadData.js';
 import updateRssFeeds from './updateRssFeeds.js';
+import * as handlers from './viewHandlers.js';
 
 export default () => {
   const elements = {
@@ -21,7 +21,7 @@ export default () => {
     footerModal: document.querySelector('.modal-footer .btn'),
   };
 
-  i18n.init({
+  const i18Promise = i18n.init({
     lng: 'ru',
     fallbackLng: 'ru',
     resources: {
@@ -58,32 +58,47 @@ export default () => {
     },
   };
 
-  const watchedState = onChange(state, (path, value) => i18n.changeLanguage('ru').then((translate) => {
-    render(state, path, value, elements, translate);
-  }));
+  const {
+    handleFeeds, handlePosts, handleLoadingProcessStatus, handleFormProcessError,
+    handleLoadingProcessError, handleModalPostId, handleSeenPostsId,
+  } = handlers;
 
-  const { form, postsContainer } = elements;
+  const mapping = {
+    feeds: (value, translate) => handleFeeds(value, elements, translate),
+    posts: (value, translate) => handlePosts(value, elements, translate),
+    'formProcess.error': (value, translate) => handleFormProcessError(value, elements, translate),
+    'loadingProcess.status': (value, translate) => handleLoadingProcessStatus(value, elements, translate),
+    'loadingProcess.error': (value, translate) => handleLoadingProcessError(value, elements, translate),
+    'UI.modalPostId': (value) => handleModalPostId(value, elements, state),
+    'UI.seenPostsId': (value) => handleSeenPostsId(value),
+  };
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    watchedState.loadingProcess.status = 'waiting';
-    watchedState.loadingProcess.error = null;
-    watchedState.formProcess.error = null;
-    const { url } = Object.fromEntries(new FormData(e.target));
-    const urls = state.feeds.map((feed) => feed.url);
-    const validationError = validate(url, urls);
-    if (!_.isEmpty(validationError)) {
-      displayErrors(validationError, watchedState);
-      return;
-    }
-    watchedState.loadingProcess.status = 'loading';
-    loadData(watchedState, url);
+  i18Promise.then((translate) => {
+    const watchedState = onChange(state, (path, value) => mapping[path](value, translate));
+
+    const { form, postsContainer } = elements;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      watchedState.loadingProcess.status = 'waiting';
+      watchedState.loadingProcess.error = null;
+      watchedState.formProcess.error = null;
+      const { url } = Object.fromEntries(new FormData(e.target));
+      const urls = state.feeds.map((feed) => feed.url);
+      const validationError = validate(url, urls);
+      if (!_.isEmpty(validationError)) {
+        displayErrors(validationError, watchedState);
+        return;
+      }
+      watchedState.loadingProcess.status = 'loading';
+      loadData(watchedState, url);
+    });
+    postsContainer.addEventListener('click', (el) => {
+      if (el.target.dataset.id) {
+        watchedState.UI.modalPostId = el.target.dataset.id;
+        watchedState.UI.seenPostsId.push(state.UI.modalPostId);
+      }
+    });
+    updateRssFeeds(watchedState, state);
   });
-  postsContainer.addEventListener('click', (el) => {
-    if (el.target.dataset.id) {
-      watchedState.UI.modalPostId = el.target.dataset.id;
-      watchedState.UI.seenPostsId.push(state.UI.modalPostId);
-    }
-  });
-  updateRssFeeds(watchedState, state);
+  return i18Promise;
 };
