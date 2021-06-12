@@ -9,6 +9,7 @@ export default (str, urls) => {
     schema.validateSync(str);
     return null;
   } catch (err) {
+    console.log(err);
     return err;
   }
 };
