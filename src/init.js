@@ -2,7 +2,6 @@
 import _ from 'lodash';
 import i18n from 'i18next';
 import validate from './validate.js';
-import displayErrors from './displayErrors.js';
 import loadData from './loadData.js';
 import updateRssFeeds from './updateRssFeeds.js';
 import locales from './locales/index.js';
@@ -55,9 +54,9 @@ export default () => {
       watchedState.form.error = null;
       const { url } = Object.fromEntries(new FormData(e.target));
       const urls = state.feeds.map((feed) => feed.url);
-      const validationError = validate(url, urls);
+      const validationError = validate(url, urls, translate);
       if (!_.isEmpty(validationError)) {
-        displayErrors(validationError, watchedState);
+        watchedState.form.error = validationError;
         return;
       }
       watchedState.loading.status = 'loading';

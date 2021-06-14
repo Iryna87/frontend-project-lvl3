@@ -146,7 +146,7 @@ const mapping = {
 };
 
 const attachViewHandlers = (state, elements, translate) => (
-  onChange(state, (path, value) => mapping[path](value, elements, translate, state))
+  onChange(state, (path, value) => mapping[path]?.(value, elements, translate, state))
 );
 
 export default attachViewHandlers;
