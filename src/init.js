@@ -1,6 +1,7 @@
 // @ts-nocheck
 import _ from 'lodash';
 import i18n from 'i18next';
+import * as yup from 'yup';
 import validate from './validate.js';
 import loadData from './loadData.js';
 import updateRssFeeds from './updateRssFeeds.js';
@@ -25,6 +26,17 @@ export default () => {
     lng: 'ru',
     fallbackLng: 'ru',
     resources: locales,
+  });
+
+  yup.setLocale({
+    mixed: {
+      notOneOf: 'validation_double_error',
+      required: 'validation_required_error',
+      default: 'validation_unknown_error',
+    },
+    string: {
+      url: 'validation_url_error',
+    },
   });
 
   const state = {
@@ -54,7 +66,7 @@ export default () => {
       watchedState.form.error = null;
       const { url } = Object.fromEntries(new FormData(e.target));
       const urls = state.feeds.map((feed) => feed.url);
-      const validationError = validate(url, urls, translate);
+      const validationError = validate(url, urls);
       if (!_.isEmpty(validationError)) {
         watchedState.form.error = validationError;
         return;
